@@ -1,0 +1,32 @@
+14 -1 match
+4 - 7 matches
+9 - 3 maches
+12 - 3 matches
+2 - 5 matches
+16 - 6 maches
+10 - 5 matches
+0 - 3 matches
+18 - 4 matches
+13 - 2 matches
+8 - 5 matches
+11 - 4 matches
+15 - 2 matches
+1 - 2 matches
+6 - 4 matches
+7 - 1 match
+19 - 1 match
+3 - 1 match
+
+4 w/ 1 match
+3 w/ 2 matches
+3 w/ 3 matches
+3 w/ 4 matches (1 overflow) (3 extra keys needed)
+3 w/ 5 matches (2 overflow) (6 extra keys needed)
+1 w/ 6 matches (3 overflow) (3 extra keys needed)
+1 w/ 7 matches (4 overflow) (4 extra keys needed)
+
+4 total overflows with 16 extra keys
+
+
+
+
