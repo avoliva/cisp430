@@ -1,0 +1,120 @@
+                                    Hash Table                                    
+                               Verififcation Report                               
+                                Before Restoration                                Bucket 1
+	Slot 1: EL PR. LONG BEACH CA
+
+Bucket 2
+	Slot 1: CIRRUS BEAVERTON, OR
+	Slot 2: LOACH AV NORCROSS GE
+	Slot 3: UNIVER A SAN JOSE CA
+
+Bucket 3
+	Slot 1: ALTON AV IRVINE   CA
+	Slot 2: SNTONIO PALO ALTO CA
+	Slot 3: 3RD ST CAMBRIDGE, MA
+
+Bucket 4
+	Slot 1: REMING SCHAUMBURG IL
+	Slot 2: WESTINGHO FREMONT CA
+	Slot 3: FEDERA BOCA RATON FL
+
+Bucket 5
+	Slot 1: SPRING VAL DALLAS TX
+	Slot 2: BABSON WELLESLEY, MA
+	Slot 3: BELLAI HOLLEYWOOD CA
+
+Bucket 6
+	Slot 1: NINTH ST BERKELEY CA
+	Slot 2: OXFORD  MOONACHIE NJ
+	Slot 3: CENTER ST. OREM UTAH
+
+Bucket 7
+	Slot 1: H.W. PKWY ROSWELL GE
+	Slot 2: STAN ST SANTA ANA CA
+	Slot 3: MILMONT FREMONT,  CA
+
+Bucket 8
+	Slot 1: WESTA SOUTH ROY UTAH
+	Slot 2: BERNARD SAN DIEGO CA
+	Slot 3: FREMONT S FREMONT CA
+
+Bucket 9
+	Slot 1: WALSH SANTA CLARA CA
+	Slot 2: SCOTTS VALLEY, CALIF
+	Slot 3: WOLFE R SUNNYVALE CA
+
+Bucket 10
+	Slot 1: CITY OF INDUSTRY, CA
+	Slot 2: TAYLOR S BRISBANE CA
+
+Bucket 11
+	Slot 1: BOWLING DR DAYTON OH
+	Slot 2: BOX 57135 HAYWARD CA
+	Slot 3: GREEN RICHARDSON, TX
+
+Bucket 12
+	Slot 1: CAMPUS D NORCROSS GE
+	Slot 2: RICHMOND HOUSTON, TX
+	Slot 3: GARDEN C MONTEREY CA
+
+Bucket 13
+	Slot 1: SCOTTS V. DR S.V. CA
+	Slot 2: UNVIE WINTER PARK FL
+
+Bucket 14
+	Slot 1: MONTRE QUEBEC CANADA
+
+Bucket 15
+	Slot 1: BOCA RATON,  FLORIDA
+	Slot 2: BEDA STR TORRANCE CA
+	Slot 3: TRIMBLE SAN JOSE, CA
+
+Bucket 16
+	Slot 1: 5 ST MOUNTAINVIEW CA
+
+Bucket 17
+	Slot 1: KI ST TORONTO CANADA
+
+Bucket 18
+	Slot 1: A MOUNTAIN LAUREL NJ
+
+Bucket 19
+
+Bucket 20
+	Slot 1: EWING S PRINCETON NJ
+	Slot 2: 5TH AVE. WALTHAM, MA
+	Slot 3: POBOX 1305 MCLEAN VA
+
+Bucket 21
+	Slot 1: BAKER COSTA MESA, CA
+	Slot 2: THENALA DR IRVINE CA
+	Slot 3: UNIVE WAY SEATTLE WA
+
+Bucket 22
+	Slot 1: CALLE S CAMARILLO CA
+	Slot 2: SEMOR CASSELBERRY FL
+
+Bucket 23
+	Slot 1: 128 AVE BELLEVUE, WA
+	Slot 2: PAT H SANTA CLARA CA
+
+Bucket 24
+	Slot 1: UNIO PETERBOROUGH NH
+
+Bucket 25
+	Slot 1: TECH BLVD. AUSTIN TX
+	Slot 2: MAINE GROVE VALLY IL
+
+Bucket 26
+	Slot 1: TEMPOHOUSE LONDON UK
+
+Bucket 27
+	Slot 1: COCHRAN RD. SOLON OH
+
+Bucket 28
+	Slot 1: STAFFO OTTAWA CANADA
+
+Bucket 29
+
+Bucket 30
+

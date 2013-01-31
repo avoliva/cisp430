@@ -19,10 +19,27 @@ class HashTable:
         for i in range(0, MaxBuckets):
             self.table.append(Bucket())
 
-    def ReadFile(self):
+    def GenerateReport(self):
+        f = open('./newfile.txt', 'w+')
+        f.write('Hash Table'.center(82))
+        f.write('\n')
+        f.write('Verififcation Report'.center(82))
+        f.write('\n')
+        f.write('Before Restoration'.center(82))
+        for pos, item in enumerate(self.table):
+            # f.write('Bucket {0}\n'.format(pos + 1))
+            f.write('Bucket {0}\n'.format(pos + 1))
+            for key, value in item.slots.iteritems():
+                for index in item.slots[key]:
+                    f.write('\tSlot {0}: {1}\n'.format(index + 1,
+                        item.slots[key][index]))
+            f.write('\n')
+
+    def DataIn(self):
         f = open('./datain.dat', 'r')
         for i in f.readlines():
-            self.Insert(self.Hash(i[:10]) % TableSize, i[10:])
+            self.Insert(self.Hash(i[:10]) % TableSize, i[10:30])
+        f.close()
 
     def Hash(self, key):
         return ord(key[2]) + ord(key[4]) + ord(key[6]) % TableSize
@@ -82,5 +99,8 @@ class HashTable:
 
 ht = HashTable()
 
-ht.ReadFile()
+ht.DataIn()
 
+ht.GenerateReport()
+
+# print('{0:20} {1}'.format(' ','hash table'.center))
