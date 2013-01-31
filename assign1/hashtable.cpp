@@ -13,6 +13,7 @@ enum BucketSize
 	MaxBuckets = 30
 };
 
+
 const int TableSize = 20;
 
 class Slot
