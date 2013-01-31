@@ -1,3 +1,9 @@
+#@author Adam Voliva
+#@description CISP 430 Data Structures
+#@name Assignment 1 Hash Table
+#@date January 31, 2013
+
+
 import pickle
 
 MaxSlots = 3
@@ -51,6 +57,7 @@ class HashTable:
         f.write('Verififcation Report'.center(82))
         f.write('\n')
         f.write('Before Restoration'.center(82))
+        f.write('\n')
         for pos, item in enumerate(self.table):
             f.write('Bucket {0}\n'.format(pos + 1))
             for key, value in item.slots.iteritems():
@@ -63,7 +70,7 @@ class HashTable:
             if len(self.table[pos].slots) == 0:
                 for index in range(0, 3):
                     f.write('\tSlot {0}: \n'.format(index + 1))
-            f.write('Overflow Pointer: {0}'.format(
+            f.write('Overflow Pointer: {0}\n'.format(
                 self.table[pos].overflow))
             f.write('\n')
 
@@ -77,36 +84,45 @@ class HashTable:
         return ord(key[2]) + ord(key[4]) + ord(key[6]) % TableSize
 
     def Insert(self, key, value):
-        item = self.CollissionCheck(key)
-        if item is not None:
+        tup = self.CollissionCheck(key)
+        if tup is not None:
             # collission is true
+            item, index = tup
             if 2 in item.keys():
                 index = self.CheckAvailableBuckets(key, 19, MaxBuckets)
                 # overflow is true
-                length = self.GetTableLength(key, index)
+                # length = self.GetTableLength(key, index)
+                length = self.table[index].count
                 while length == 3:
                     # overflow of overflow is true
                     index = self.CheckAvailableBuckets(key, index + 1,
                         MaxBuckets)
-                    length = self.GetTableLength(key, index)
+                    length = self.table[index].count
+                    # length = self.GetTableLength(key, index)
                 if length > 0:
                     # insert into 'old' overflow bucket
                     self.table[index].slots[key][length] = value
+                    self.table[index].count += 1
                     self.SetOverflowPointer(index, key)
                 else:
                     # new overflow bucket
                     self.table[index].slots[key] = {}
                     self.table[index].slots[key][0] = value
+                    self.table[index].count += 1
                     self.SetOverflowPointer(index, key)
             else:
                 # overflow is false, collission still true
-                length = len(item)
-                item[length] = value
+                length = self.table[index].count
+                self.table[index].slots[key][length] = value
+                self.table[index].count += 1
+                # print item.child()
+                # print item.count
         else:
             #brand new key
             index = self.CheckAvailableBuckets(key, 0, TableSize)
             self.table[index].slots[key] = {}
             self.table[index].slots[key][0] = value
+            self.table[index].count += 1
 
     def SetOverflowPointer(self, index, key):
         overflow_index = self.CheckAvailableBuckets(key,
@@ -114,17 +130,10 @@ class HashTable:
         self.table[index].overflow = overflow_index
         self.table[overflow_index].overflow = index
 
-    def GetTableLength(self, key, index):
-        if key in self.table[index].slots:
-            length = len(self.table[index].slots[key])
-        else:
-            length = len(self.table[index].slots)
-        return length
-
     def CollissionCheck(self, key):
-        for item in self.table:
+        for pos, item in enumerate(self.table):
             if key in item.slots:
-                return item.slots[key]
+                return item.slots[key], pos
         return None
 
     def CheckAvailableBuckets(self, key, minimum, maximum):
