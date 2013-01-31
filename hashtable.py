@@ -146,7 +146,7 @@ ht.GenerateReport()
 ht.SaveReport()
 
 if ht.table is not None:
-    raise Exception('The hash table must be deleted from disk.')
+    raise Exception('The hash table must be deleted from memory.')
 
 ht.RestoreReport()
 
