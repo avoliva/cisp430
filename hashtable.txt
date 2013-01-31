@@ -1,0 +1,520 @@
+(lp0
+(i__main__
+Bucket
+p1
+(dp2
+S'count'
+p3
+I0
+sS'overflow'
+p4
+NsS'slots'
+p5
+(dp6
+I14
+(dp7
+I0
+S'EL PR. LONG BEACH CA'
+p8
+sssba(i__main__
+Bucket
+p9
+(dp10
+g3
+I0
+sg4
+I26
+sg5
+(dp11
+I4
+(dp12
+I0
+S'CIRRUS BEAVERTON, OR'
+p13
+sI1
+S'LOACH AV NORCROSS GE'
+p14
+sI2
+S'UNIVER A SAN JOSE CA'
+p15
+sssba(i__main__
+Bucket
+p16
+(dp17
+g3
+I0
+sg4
+Nsg5
+(dp18
+I9
+(dp19
+I0
+S'ALTON AV IRVINE   CA'
+p20
+sI1
+S'SNTONIO PALO ALTO CA'
+p21
+sI2
+S'3RD ST CAMBRIDGE, MA'
+p22
+sssba(i__main__
+Bucket
+p23
+(dp24
+g3
+I0
+sg4
+Nsg5
+(dp25
+I12
+(dp26
+I0
+S'REMING SCHAUMBURG IL'
+p27
+sI1
+S'WESTINGHO FREMONT CA'
+p28
+sI2
+S'FEDERA BOCA RATON FL'
+p29
+sssba(i__main__
+Bucket
+p30
+(dp31
+g3
+I0
+sg4
+I21
+sg5
+(dp32
+I2
+(dp33
+I0
+S'SPRING VAL DALLAS TX'
+p34
+sI1
+S'BABSON WELLESLEY, MA'
+p35
+sI2
+S'BELLAI HOLLEYWOOD CA'
+p36
+sssba(i__main__
+Bucket
+p37
+(dp38
+g3
+I0
+sg4
+I20
+sg5
+(dp39
+I16
+(dp40
+I0
+S'NINTH ST BERKELEY CA'
+p41
+sI1
+S'OXFORD  MOONACHIE NJ'
+p42
+sI2
+S'CENTER ST. OREM UTAH'
+p43
+sssba(i__main__
+Bucket
+p44
+(dp45
+g3
+I0
+sg4
+I24
+sg5
+(dp46
+I10
+(dp47
+I0
+S'H.W. PKWY ROSWELL GE'
+p48
+sI1
+S'STAN ST SANTA ANA CA'
+p49
+sI2
+S'MILMONT FREMONT,  CA'
+p50
+sssba(i__main__
+Bucket
+p51
+(dp52
+g3
+I0
+sg4
+Nsg5
+(dp53
+I0
+(dp54
+I0
+S'WESTA SOUTH ROY UTAH'
+p55
+sI1
+S'BERNARD SAN DIEGO CA'
+p56
+sI2
+S'FREMONT S FREMONT CA'
+p57
+sssba(i__main__
+Bucket
+p58
+(dp59
+g3
+I0
+sg4
+I23
+sg5
+(dp60
+I18
+(dp61
+I0
+S'WALSH SANTA CLARA CA'
+p62
+sI1
+S'SCOTTS VALLEY, CALIF'
+p63
+sI2
+S'WOLFE R SUNNYVALE CA'
+p64
+sssba(i__main__
+Bucket
+p65
+(dp66
+g3
+I0
+sg4
+Nsg5
+(dp67
+I13
+(dp68
+I0
+S'CITY OF INDUSTRY, CA'
+p69
+sI1
+S'TAYLOR S BRISBANE CA'
+p70
+sssba(i__main__
+Bucket
+p71
+(dp72
+g3
+I0
+sg4
+I22
+sg5
+(dp73
+I8
+(dp74
+I0
+S'BOWLING DR DAYTON OH'
+p75
+sI1
+S'BOX 57135 HAYWARD CA'
+p76
+sI2
+S'GREEN RICHARDSON, TX'
+p77
+sssba(i__main__
+Bucket
+p78
+(dp79
+g3
+I0
+sg4
+I25
+sg5
+(dp80
+I11
+(dp81
+I0
+S'CAMPUS D NORCROSS GE'
+p82
+sI1
+S'RICHMOND HOUSTON, TX'
+p83
+sI2
+S'GARDEN C MONTEREY CA'
+p84
+sssba(i__main__
+Bucket
+p85
+(dp86
+g3
+I0
+sg4
+Nsg5
+(dp87
+I15
+(dp88
+I0
+S'SCOTTS V. DR S.V. CA'
+p89
+sI1
+S'UNVIE WINTER PARK FL'
+p90
+sssba(i__main__
+Bucket
+p91
+(dp92
+g3
+I0
+sg4
+Nsg5
+(dp93
+I1
+(dp94
+I0
+S'MONTRE QUEBEC CANADA'
+p95
+sssba(i__main__
+Bucket
+p96
+(dp97
+g3
+I0
+sg4
+I27
+sg5
+(dp98
+I6
+(dp99
+I0
+S'BOCA RATON,  FLORIDA'
+p100
+sI1
+S'BEDA STR TORRANCE CA'
+p101
+sI2
+S'TRIMBLE SAN JOSE, CA'
+p102
+sssba(i__main__
+Bucket
+p103
+(dp104
+g3
+I0
+sg4
+Nsg5
+(dp105
+I7
+(dp106
+I0
+S'5 ST MOUNTAINVIEW CA'
+p107
+sssba(i__main__
+Bucket
+p108
+(dp109
+g3
+I0
+sg4
+Nsg5
+(dp110
+I19
+(dp111
+I0
+S'KI ST TORONTO CANADA'
+p112
+sssba(i__main__
+Bucket
+p113
+(dp114
+g3
+I0
+sg4
+Nsg5
+(dp115
+I3
+(dp116
+I0
+S'A MOUNTAIN LAUREL NJ'
+p117
+sssba(i__main__
+Bucket
+p118
+(dp119
+g3
+I0
+sg4
+Nsg5
+(dp120
+sba(i__main__
+Bucket
+p121
+(dp122
+g3
+I0
+sg4
+I1
+sg5
+(dp123
+I4
+(dp124
+I0
+S'EWING S PRINCETON NJ'
+p125
+sI1
+S'5TH AVE. WALTHAM, MA'
+p126
+sI2
+S'POBOX 1305 MCLEAN VA'
+p127
+sssba(i__main__
+Bucket
+p128
+(dp129
+g3
+I0
+sg4
+I5
+sg5
+(dp130
+I16
+(dp131
+I0
+S'BAKER COSTA MESA, CA'
+p132
+sI1
+S'THENALA DR IRVINE CA'
+p133
+sI2
+S'UNIVE WAY SEATTLE WA'
+p134
+sssba(i__main__
+Bucket
+p135
+(dp136
+g3
+I0
+sg4
+I4
+sg5
+(dp137
+I2
+(dp138
+I0
+S'CALLE S CAMARILLO CA'
+p139
+sI1
+S'SEMOR CASSELBERRY FL'
+p140
+sssba(i__main__
+Bucket
+p141
+(dp142
+g3
+I0
+sg4
+I10
+sg5
+(dp143
+I8
+(dp144
+I0
+S'128 AVE BELLEVUE, WA'
+p145
+sI1
+S'PAT H SANTA CLARA CA'
+p146
+sssba(i__main__
+Bucket
+p147
+(dp148
+g3
+I0
+sg4
+I8
+sg5
+(dp149
+I18
+(dp150
+I0
+S'UNIO PETERBOROUGH NH'
+p151
+sssba(i__main__
+Bucket
+p152
+(dp153
+g3
+I0
+sg4
+I6
+sg5
+(dp154
+I10
+(dp155
+I0
+S'TECH BLVD. AUSTIN TX'
+p156
+sI1
+S'MAINE GROVE VALLY IL'
+p157
+sssba(i__main__
+Bucket
+p158
+(dp159
+g3
+I0
+sg4
+I11
+sg5
+(dp160
+I11
+(dp161
+I0
+S'TEMPOHOUSE LONDON UK'
+p162
+sssba(i__main__
+Bucket
+p163
+(dp164
+g3
+I0
+sg4
+I1
+sg5
+(dp165
+I4
+(dp166
+I0
+S'COCHRAN RD. SOLON OH'
+p167
+sssba(i__main__
+Bucket
+p168
+(dp169
+g3
+I0
+sg4
+I14
+sg5
+(dp170
+I6
+(dp171
+I0
+S'STAFFO OTTAWA CANADA'
+p172
+sssba(i__main__
+Bucket
+p173
+(dp174
+g3
+I0
+sg4
+Nsg5
+(dp175
+sba(i__main__
+Bucket
+p176
+(dp177
+g3
+I0
+sg4
+Nsg5
+(dp178
+sba.
