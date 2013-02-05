@@ -12,12 +12,23 @@ TableSize = 20
 OverflowSize = 10
 
 
+class Slot(dict):
+
+    def __init__(self):
+        self.key = None
+        self.value = None
+        self.list = []
+        self._dict = {}
+        for i in range(0, 3):
+            self.list.append({})
+
+
 class Bucket:
 
     def __init__(self):
         self.count = 0
         self.overflow = None
-        self.slots = {}
+        self.slots = Slot()
 
 
 class HashTable:
@@ -29,11 +40,28 @@ class HashTable:
 
     def Search(self):
         f = open('./search.dat', 'r+')
+        f2 = open('./retrieval.txt', 'w+')
+        f2.write('Search and Retrieval'.center(82))
+        f2.write('\n')
+        f2.write('Transactions'.center(82))
+        f2.write('\n')
+        f2.write('Search Key\t\tBucket/Slot\t\tRecord'.center(82))
+        f2.write('\n')
         for keys in f.readlines():
+            key = self.Hash(keys[:10])
             for pos, item in enumerate(self.table):
-                # how the hell do you know which slot it's in?
-                # fucking dixon.
-                pass
+                for ps, ite in enumerate(item.slots.list):
+                    if key in item.slots.list[ps]:
+                        if keys[:10] == item.slots.list[ps][key].key:
+                            f2.write('{0:>35}{1:>16}/{2}\t\t{3}'.format(
+                                item.slots.list[ps][key].key,
+                                pos + 1,
+                                ps + 1,
+                                item.slots.list[ps][key].value
+                            ))
+                            f2.write('\n')
+        f.close()
+        f2.close()
 
     def RestoreReport(self):
         if self.table is not None:
@@ -60,103 +88,167 @@ class HashTable:
         f.write('\n')
         for pos, item in enumerate(self.table):
             f.write('Bucket {0}\n'.format(pos + 1))
-            for key, value in item.slots.iteritems():
-                for index in range(0, 3):
-                    if index in item.slots[key].keys():
-                        f.write('\tSlot {0}: {1}\n'.format(index + 1,
-                            item.slots[key][index]))
-                    else:
-                        f.write('\tSlot {0}: \n'.format(index + 1))
-            if len(self.table[pos].slots) == 0:
-                for index in range(0, 3):
-                    f.write('\tSlot {0}: \n'.format(index + 1))
+            for ps, ite in enumerate(item.slots.list):
+                for key, value in item.slots.list[ps].iteritems():
+                    if item.slots.list[ps][key] is not None:
+                        f.write('\tSlot {0}: {1}{2}\n'.format(ps + 1,
+                                item.slots.list[ps][key].key,
+                                item.slots.list[ps][key].value))
+                if len(item.slots.list[ps].keys()) is 0:
+                    f.write('\tSlot {0}: \n'.format(ps + 1))
             f.write('Overflow Pointer: {0}\n'.format(
                 self.table[pos].overflow))
             f.write('\n')
 
     def DataIn(self):
         f = open('./datain.dat', 'r+')
-        for i in f.readlines():
-            self.Insert(self.Hash(i[:10]) % TableSize, i[10:30])
+        for line in f.readlines():
+            self.Insert(self.Hash(line[:10]), line[10:30], line[:10])
         f.close()
 
     def Hash(self, key):
-        return ord(key[2]) + ord(key[4]) + ord(key[6]) % TableSize
+        return (ord(key[2]) + ord(key[4]) + ord(key[6])) % TableSize
 
-    def Insert(self, key, value):
+    def Insert(self, key, value, data):
         tup = self.CollissionCheck(key)
         if tup is not None:
             # collission is true
-            item, index = tup
-            if 2 in item.keys():
-                index = self.CheckAvailableBuckets(key, 19, MaxBuckets)
+            item, ht_index, slot_index = tup
+            # index = None
+            # print slot_index
+            # print self.table[ht_index].count
+            # print item
+            if self.table[ht_index].count > 2:
+                ht_index, slot_index = self.CheckAvailableBuckets(key, 19, MaxBuckets)
                 # overflow is true
                 # length = self.GetTableLength(key, index)
-                length = self.table[index].count
+                length = self.table[ht_index].count
                 while length == 3:
                     # overflow of overflow is true
-                    index = self.CheckAvailableBuckets(key, index + 1,
-                        MaxBuckets)
-                    length = self.table[index].count
+                    ht_index, slot_index = self.CheckAvailableBuckets(key,
+                        ht_index + 1, MaxBuckets)
+                    length = self.table[ht_index].count
                     # length = self.GetTableLength(key, index)
                 if length > 0:
                     # insert into 'old' overflow bucket
-                    self.table[index].slots[key][length] = value
-                    self.table[index].count += 1
-                    self.SetOverflowPointer(index, key)
+                    self.table[ht_index].slots.list[length][key] = Slot()
+                    self.table[ht_index].slots.list[length][key].key = data
+                    self.table[ht_index].slots.list[length][key].value = value
+                    # self.table[ht_index].slots[key][length] = data
+                    self.table[ht_index].count += 1
+                    self.SetOverflowPointer(ht_index, key)
                 else:
                     # new overflow bucket
-                    self.table[index].slots[key] = {}
-                    self.table[index].slots[key][0] = value
-                    self.table[index].count += 1
-                    self.SetOverflowPointer(index, key)
+                    self.table[ht_index].slots.list[0][key] = Slot()
+                    self.table[ht_index].slots.list[0][key].key = data
+                    self.table[ht_index].slots.list[0][key].value = value
+                    self.table[ht_index].count += 1
+                    self.SetOverflowPointer(ht_index, key)
             else:
                 # overflow is false, collission still true
-                length = self.table[index].count
-                self.table[index].slots[key][length] = value
-                self.table[index].count += 1
+                length = self.table[ht_index].count
+                # print length
+                # print ht_index, slot_index
+                self.table[ht_index].slots.list[length][key] = Slot()
+                self.table[ht_index].slots.list[length][key].key = data
+                self.table[ht_index].slots.list[length][key].value = value
+                self.table[ht_index].count += 1
                 # print item.child()
                 # print item.count
         else:
             #brand new key
-            index = self.CheckAvailableBuckets(key, 0, TableSize)
-            self.table[index].slots[key] = {}
-            self.table[index].slots[key][0] = value
-            self.table[index].count += 1
+            ht_index, slot_index = self.CheckAvailableBuckets(key, 0, TableSize)
+            self.table[ht_index].slots.list[slot_index][key] = Slot()
+            self.table[ht_index].slots.list[slot_index][key].key = data
+            self.table[ht_index].slots.list[slot_index][key].value = value
+            self.table[ht_index].count += 1
 
     def SetOverflowPointer(self, index, key):
-        overflow_index = self.CheckAvailableBuckets(key,
+        ht_index, temp = self.CheckAvailableBuckets(key,
             0, TableSize)
-        self.table[index].overflow = overflow_index
-        self.table[overflow_index].overflow = index
+        self.table[index].overflow = ht_index
+        self.table[ht_index].overflow = index
 
     def CollissionCheck(self, key):
+        # may not be a slot yet
         for pos, item in enumerate(self.table):
-            if key in item.slots:
-                return item.slots[key], pos
+            for ps, ite in enumerate(item.slots.list):
+                if key in item.slots.list[ps]:
+                    return ite, pos, ps
+                    # print item.slots[ps].keys()
+                    # return item.slots[ps].key, ps, pos
+                    #return item.slots[ps][key].key
+                #return item.slots.key, pos
         return None
 
     def CheckAvailableBuckets(self, key, minimum, maximum):
+        # self.table[5].slots.list[1][key] = Slot()
+        # self.table[5].slots.list[1][key].key = key
         for i in range(minimum, maximum):
-            if key in self.table[i].slots.keys():
-                return i
-            if len(self.table[i].slots.keys()) is 0:
-                return i
-        # Should never get here
-        raise Exception('Ran out of overflow buckets!')
+            # print minimum, maximum
+            for j in range(0, 3):
+                # print self.table[i].slots.list[j].keys()
+                # print len(self.table[i].slots.list[0])
+
+                if key in self.table[i].slots.list[j].keys():
+                    return i, j
+                if len(self.table[i].slots.list[0]) is 0:
+                    return i, j
+                #     return j
+        # # Should never get here
+        # raise Exception('Ran out of overflow buckets!')
 
 
 ht = HashTable()
 
+# s = Slot()
+# s.list[0]['key'] = Slot()
+# ht.Insert('key', 'value', 'keyvalue')
 ht.DataIn()
 
 ht.GenerateReport()
+ht.Search()
 
-ht.SaveReport()
+# ht.SaveReport()
+# print ht.table
+# ht.RestoreReport()
+# # print ht.table
+# print ht.table[0].slots.list[0][14].key
+# fuck = ht.CollissionCheck('key')
+# ht.CheckAvailableBuckets('key', 0, 20)
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# ht.Insert('key','value','keyvalue')
+# print ht.table[0].slots.list[0]['key'].value
+# print ht.table[0].slots.list[1]['key'].value
+# print ht.table[0].slots.list[2]['key'].value
+# print ht.table[19].slots.list[0]['key'].value
+# print ht.table[19].slots.list[1]['key'].value
+# print ht.table[19].slots.list[2]['key'].value
+# print ht.table[20].slots.list[0]['key'].value
+# print ht.table[19].slots.list[1]['key'].value
+# s['key'] = 'v'
+# print s
+#ht.CollissionCheck('k')
+# ht.Insert('k', 'k', 'kv')
+# ht.Insert('j', 's-', 'kv')
+# print ht.table[0].slots[0].key
+#print data
+# ht.DataIn()
 
-if ht.table is not None:
-    raise Exception('The hash table must be deleted from memory.')
+# ht.GenerateReport()
 
-ht.RestoreReport()
+# ht.SaveReport()
+
+# if ht.table is not None:
+#     raise Exception('The hash table must be deleted from memory.')
+
+# ht.RestoreReport()
 
 # print('{0:20} {1}'.format(' ','hash table'.center))
