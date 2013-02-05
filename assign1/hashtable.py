@@ -4,6 +4,7 @@
 #@date February 5, 2013
 
 
+# Pickle is a standard Python library
 import pickle
 
 
@@ -83,8 +84,8 @@ class HashTable:
         # Deleted from memory
         self.table = None
 
-    def GenerateReport(self):
-        f = open('./before.txt', 'w+')
+    def GenerateReport(self, fname):
+        f = open('./{0}'.format(fname), 'w+')
         f.write('Hash Table'.center(82))
         f.write('\n')
         f.write('Verififcation Report'.center(82))
@@ -100,7 +101,7 @@ class HashTable:
                                 item.slots[ps][key].key,
                                 item.slots[ps][key].value))
                 if len(item.slots[ps].keys()) is 0:
-                    f.write('\tSlot {0}: \n'.format(ps + 1))
+                    f.write('\tSlot {0}: None\n'.format(ps + 1))
             if self.table[pos].overflow is not None:
                 f.write('Overflow Pointer: {0}\n'.format(
                     int(self.table[pos].overflow) + 1))
@@ -188,7 +189,7 @@ class HashTable:
                     return i, j
                 if len(self.table[i].slots[0]) is 0:
                     return i, j
-        # # Should never get here
+        # Should never get here
         raise Exception('Ran out of overflow buckets!')
 
 
@@ -196,7 +197,7 @@ ht = HashTable()
 
 ht.DataIn()
 
-ht.GenerateReport()
+ht.GenerateReport('before.txt')
 
 ht.SaveReport()
 
@@ -204,5 +205,9 @@ if ht.table is not None:
     raise Exception('The hash table must be deleted from memory.')
 
 ht.RestoreReport()
+
+ht.GenerateReport('after.txt')
+
+ht.Search()
 
 # print('{0:20} {1}'.format(' ','hash table'.center))
