@@ -183,7 +183,6 @@ class HashTable:
         return None
 
     def CheckAvailableBuckets(self, key, minimum, maximum):
-        # Returns a tuple
         for i in range(minimum, maximum):
             for j in range(0, 3):
                 if key in self.table[i].slots[j].keys():
