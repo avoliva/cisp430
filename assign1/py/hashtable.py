@@ -15,7 +15,7 @@ TableSize = 20
 OverflowSize = 10
 
 
-class Slot(dict):
+class Slot():
 
     def __init__(self):
         self.key = None
@@ -42,6 +42,38 @@ class HashTable:
         for i in range(0, MaxBuckets):
             self.table.append(Bucket())
 
+    #@todo format
+    def CollectStatistics(self):
+        # Collection avg chain #'s
+        # Total length of each primary bucket
+        # Avg of all primary buckets
+        # Exclude buckets with zero slots
+        # For total length, similar to before/after report
+        chain = []
+        chain_count = {}
+        avg_chain = 0
+        for i in range(20, 30):
+            if self.table[i].overflow is not None:
+                chain.append(int(self.table[i].overflow) + 1)
+            else:
+                chain.append(0)
+            if i not in chain_count.keys() and self.table[i].overflow is not None:
+                chain_count[int(self.table[i].overflow) + 1] = chain.count(int(self.table[i].overflow) + 1)
+                avg_chain += chain_count[int(self.table[i].overflow) + 1]
+        avg_chain /= (len(chain_count) + 1)
+        print('Average is {0}'.format(avg_chain))
+
+        total_length = 0
+        total_length_avg = 0
+        non_zero_buckets = 0
+        for i in range(0, 20):
+            total_length += int(self.table[i].count)
+            if int(self.table[i].count) is not 0:
+                non_zero_buckets += 1
+        total_length_avg = total_length / non_zero_buckets
+        print('Total length is {0}'.format(total_length))
+        print('Total length avg is {0}'.format(total_length_avg))
+
     def Search(self):
         f = open('./search.dat', 'r+')
         f2 = open('./retrieval.txt', 'w+')
@@ -51,12 +83,14 @@ class HashTable:
         f2.write('\n')
         f2.write('Search Key\t\tBucket/Slot\t\tRecord'.center(82))
         f2.write('\n')
+        found = False
         for keys in f.readlines():
             key = self.Hash(keys[:10])
             for pos, item in enumerate(self.table):
                 for index, slot in enumerate(item.slots):
                     if key in item.slots[index]:
                         if keys[:10] == item.slots[index][key].key:
+                            found = True
                             f2.write('{0:>35}{1:>16}/{2}\t\t{3}'.format(
                                 item.slots[index][key].key,
                                 pos + 1,
@@ -64,6 +98,21 @@ class HashTable:
                                 item.slots[index][key].value
                             ))
                             f2.write('\n')
+                            # f2.write('{0:>35}{1:>16} {2}\t\t{3}'.format(
+                            #     keys[:10],
+                            #     ' ',
+                            #     ' ',
+                            #     'Record not found'
+                            # ))
+                            # f2.write('\n')
+            if found == False:
+                f2.write('{0:>35}{1:>16} {2}\t\t{3}'.format(
+                    keys[:10],
+                    ' ',
+                    ' ',
+                    'Record not found'
+                ))
+                f2.write('\n')
         f.close()
         f2.close()
 
@@ -71,13 +120,13 @@ class HashTable:
         # Why restore a structure that still exists?
         if self.table is not None:
             raise Exception('The hash table has been restored already.')
-        f = open('./hashtable.txt', 'r+')
+        f = open('./hashtable.txt', 'rb+')
         # Loads the file back into memory
         self.table = pickle.load(f)
         f.close()
 
     def SaveReport(self):
-        f = open('./hashtable.txt', 'w+')
+        f = open('./hashtable.txt', 'wb+')
         # Pickle dumps a data structure to a file
         pickle.dump(self.table, f)
         f.close()
@@ -95,7 +144,7 @@ class HashTable:
         for pos, item in enumerate(self.table):
             f.write('Bucket {0}\n'.format(pos + 1))
             for index, slot in enumerate(item.slots):
-                for key, value in item.slots[index].iteritems():
+                for key, value in item.slots[index].items():
                     if item.slots[index][key] is not None:
                         f.write('\tSlot {0}: {1}{2}\n'.format(index + 1,
                                 item.slots[index][key].key,
@@ -127,7 +176,7 @@ class HashTable:
             # collission is true
             item, index = tup
             if self.table[index].count > 2:
-                index = self.CheckAvailableBuckets(key, 19, MaxBuckets)
+                index = self.CheckAvailableBuckets(key, 20, MaxBuckets)
                 # overflow is true
                 length = self.table[index].count
                 while length == 3:
@@ -210,4 +259,4 @@ ht.GenerateReport('after.txt')
 
 ht.Search()
 
-# print('{0:20} {1}'.format(' ','hash table'.center))
+ht.CollectStatistics()
