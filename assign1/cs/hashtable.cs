@@ -261,7 +261,6 @@ namespace hashtable
                     }
                     if (this.table[i].slots[0].Count == 0)
                     {
-                        //Console.WriteLine("i is " + i + ", j is " + j);
                         return i;
                     }
                 }
