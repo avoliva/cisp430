@@ -1,3 +1,12 @@
+/*
+@author Adam Voliva
+@description CISP 430 Data Structures
+@name Assignment 1 Hash Table
+@date February 6, 2013
+@file hashtable.cs
+*/
+
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
