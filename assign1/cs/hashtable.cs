@@ -173,7 +173,7 @@ namespace hashtable
                     index = this.CheckAvailableBuckets(key, 20, 30);
                     int length = this.table[index].count;
                     Console.WriteLine("length is " + length);
-                    if (length == 3)
+                    while (length == 3)
                     {
                         //overflow of overflow is true
                         //Console.WriteLine("overflow of overflow is true");
