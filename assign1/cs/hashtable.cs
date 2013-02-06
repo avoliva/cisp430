@@ -138,7 +138,7 @@ namespace hashtable
             }
             string[] text = lines.ToArray();
             System.IO.File.WriteAllLines(
-                ]@"C:\Users\Owner\Documents\cisp430\git\assign1\before.txt", 
+                @"C:\Users\Owner\Documents\cisp430\git\assign1\before.txt", 
                 text
             );
         }
