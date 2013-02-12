@@ -1,0 +1,1095 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil Consolas;}{\f2\fnil\fcharset0 Courier New;}}
+{\colortbl ;\red0\green128\blue0;\red0\green0\blue255;\red43\green145\blue175;\red163\green21\blue21;\red128\green128\blue128;}
+{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sl240\slmult1\qr\lang9\f0\fs22 Adam Voliva\par
+\tab CISP 430\par
+Assign 1 - Hash Table ( C# )\par
+\par
+\pard\sl240\slmult1\qc\ul SLOT.CS\par
+\par
+\pard\sl240\slmult1\cf1\ulnone\f1\fs19 /**\cf0\par
+\cf1  * @author Adam Voliva\cf0\par
+\cf1  * @description CISP 430 Data Structures\cf0\par
+\cf1  * @name Assignment 1 Hash Table\cf0\par
+\cf1  * @date February 5, 2013\cf0\par
+\cf1  * @file Slot.cs\cf0\par
+\cf1  */\cf0\par
+\par
+\cf2 using\cf0  System;\par
+\cf2 using\cf0  System.Collections.Generic;\par
+\cf2 using\cf0  System.Linq;\par
+\cf2 using\cf0  System.Text;\par
+\par
+\cf2 namespace\cf0  HashTable\par
+\{\par
+    [\cf3 Serializable\cf0 ]\par
+    \cf2 class\cf0  \cf3 Slot\cf0\par
+    \{\par
+        \cf2 public\cf0  \cf2 string\cf0  key;\par
+        \cf2 public\cf0  \cf2 string\cf0  value;\par
+        \cf2 public\cf0  Slot()\par
+        \{\par
+            \cf2 this\cf0 .key = \cf2 null\cf0 ;\par
+            \cf2 this\cf0 .value = \cf2 null\cf0 ;\par
+        \}\par
+    \}\par
+\}\par
+\par
+\f0\fs22\par
+\pard\sl240\slmult1\qc\ul BUCKET.CS\par
+\par
+\pard\sl240\slmult1\cf1\ulnone\f1\fs19 /**\cf0\par
+\cf1  * @author Adam Voliva\cf0\par
+\cf1  * @description CISP 430 Data Structures\cf0\par
+\cf1  * @name Assignment 1 Hash Table\cf0\par
+\cf1  * @date February 5, 2013\cf0\par
+\cf1  * @file Bucket.cs\cf0\par
+\cf1  */\cf0\par
+\par
+\cf2 using\cf0  System;\par
+\cf2 using\cf0  System.Collections.Generic;\par
+\cf2 using\cf0  System.Linq;\par
+\cf2 using\cf0  System.Text;\par
+\par
+\cf2 namespace\cf0  HashTable\par
+\{\par
+    [\cf3 Serializable\cf0 ]\par
+    \cf2 class\cf0  \cf3 Bucket\cf0\par
+    \{\par
+        \cf2 private\cf0  \cf2 const\cf0  \cf2 int\cf0  MAX_SLOTS = 3;\par
+        \cf2 public\cf0  \cf2 int\cf0  count;\par
+        \cf2 public\cf0  \cf2 int\cf0  overflow;\par
+        \cf2 public\cf0  \cf3 List\cf0 <\cf3 Dictionary\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 >> slots;\par
+\par
+        \cf1 // Default constructor\cf0\par
+        \cf2 public\cf0  Bucket()\par
+        \{\par
+            \cf2 this\cf0 .count = 0;\par
+            \cf2 this\cf0 .overflow = -1;\par
+            \cf2 this\cf0 .slots = \cf2 new\cf0  \cf3 List\cf0 <\cf3 Dictionary\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 >>();\par
+\par
+            \cf1 // Each Bucket contains 3 slot objects, represented here by a list.\cf0\par
+            \cf2 for\cf0  (\cf2 int\cf0  i = 0; i < MAX_SLOTS; ++i)\par
+            \{\par
+                \cf2 this\cf0 .slots.Add(\cf2 new\cf0  \cf3 Dictionary\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 >());\par
+            \}\par
+\par
+        \}\par
+    \}\par
+\}\par
+\par
+\f0\fs22\par
+\pard\sl240\slmult1\qc\ul TABLE.CS\par
+\par
+\pard\sl240\slmult1\cf1\ulnone\f1\fs19 /**\cf0\par
+\cf1  * @author Adam Voliva\cf0\par
+\cf1  * @description CISP 430 Data Structures\cf0\par
+\cf1  * @name Assignment 1 Hash Table\cf0\par
+\cf1  * @date February 5, 2013\cf0\par
+\cf1  * @file Table.cs\cf0\par
+\cf1  */\cf0\par
+\par
+\par
+\par
+\cf2 using\cf0  System;\par
+\cf2 using\cf0  System.Collections.Generic;\par
+\cf2 using\cf0  System.Linq;\par
+\cf2 using\cf0  System.Text;\par
+\cf2 using\cf0  System.IO;\par
+\cf2 using\cf0  System.Runtime.Serialization;\par
+\cf2 using\cf0  System.Runtime.Serialization.Formatters;\par
+\cf2 using\cf0  System.Runtime.Serialization.Formatters.Binary;\par
+\par
+\cf2 namespace\cf0  HashTable\par
+\{ \par
+    [\cf3 Serializable\cf0 ] \par
+    \cf2 class\cf0  \cf3 Table\cf0\par
+    \{\par
+        \cf2 public\cf0  \cf3 List\cf0 <\cf3 Bucket\cf0 > table;\par
+        \cf2 public\cf0  \cf2 const\cf0  \cf2 int\cf0  MAX_SLOTS = 3;\par
+        \cf2 public\cf0  \cf2 const\cf0  \cf2 int\cf0  MAX_BUCKETS = 30;\par
+        \cf2 public\cf0  \cf2 const\cf0  \cf2 int\cf0  OVERFLOW_SIZE = 10;\par
+        \cf2 public\cf0  \cf2 const\cf0  \cf2 int\cf0  PRIMARY_TABLE_SIZE = 20;\par
+\par
+        \cf1 // Default constructor\cf0\par
+        \cf2 public\cf0  Table()\par
+        \{\par
+            \cf2 this\cf0 .table = \cf2 new\cf0  \cf3 List\cf0 <\cf3 Bucket\cf0 >();\par
+\par
+            \cf1 // Allocates MaxBucket amount of buckets for each hash table.\cf0\par
+            \cf2 for\cf0  (\cf2 int\cf0  i = 0; i < MAX_BUCKETS; ++i)\par
+            \{\par
+                \cf2 this\cf0 .table.Add(\cf2 new\cf0  \cf3 Bucket\cf0 ());\par
+            \}\par
+        \}\par
+\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Collect bucket statistics\cf0\par
+\cf1          * \cf0\par
+\cf1          * @returns \{string[]\} Array of strings that can be written to a file\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 string\cf0 [] CollectStatistics()\par
+        \{\par
+            \cf3 List\cf0 <\cf2 string\cf0 > lines = \cf2 new\cf0  \cf3 List\cf0 <\cf2 string\cf0 >();\par
+            \cf3 List\cf0 <\cf2 int\cf0 > chain = \cf2 new\cf0  \cf3 List\cf0 <\cf2 int\cf0 >();\par
+            \cf3 Dictionary\cf0 <\cf2 int\cf0 , \cf2 int\cf0 > chain_count = \cf2 new\cf0  \cf3 Dictionary\cf0 <\cf2 int\cf0 , \cf2 int\cf0 >();\par
+\par
+            \cf2 float\cf0  chain_avg = 0F;\par
+            \cf2 float\cf0  total_length_avg = 0F;\par
+            \cf2 float\cf0  total_length = 0F;\par
+            \cf2 float\cf0  non_zero_length_buckets = 0F;\par
+\par
+            \cf2 for\cf0  (\cf2 int\cf0  i = 20; i < MAX_BUCKETS; ++i)\par
+            \{\par
+                \cf1 // if overflow is set\cf0\par
+                \cf2 if\cf0  (\cf2 this\cf0 .table[i].overflow != -1)\par
+                \{\par
+                    \cf1 // if overflow is greater than table size, do some weird math stuff.\cf0\par
+                    \cf1 // this accounts for overflows of overflows.\cf0\par
+                    \cf1 // else add to the list normally.\cf0\par
+                    \cf2 if\cf0  (\cf2 this\cf0 .table[i].overflow + 1 >= PRIMARY_TABLE_SIZE)\par
+                    \{\par
+                        chain.Add((\cf2 this\cf0 .table[i].overflow + 1) - (PRIMARY_TABLE_SIZE - 1));\par
+                    \}\par
+                    \cf2 else\cf0\par
+                    \{\par
+                        chain.Add(\cf2 this\cf0 .table[i].overflow + 1);\par
+                    \}\par
+                \}\par
+                \cf2 else\cf0\par
+                \{\par
+                    \cf1 //if no overflow is set, just add 0 (not -1)\cf0\par
+                    chain.Add(0);\par
+                \}\par
+                \cf1 // if the chain_count dicitionary contains this key and overflow is also set\cf0\par
+                \cf2 if\cf0  (!chain_count.ContainsKey(i) && \cf2 this\cf0 .table[i].overflow != -1)\par
+                \{\par
+                    \cf1 // ternary statement. this math accounts for overflow of overflows.\cf0\par
+                    \cf2 int\cf0  index = (\cf2 this\cf0 .table[i].overflow + 1 >= PRIMARY_TABLE_SIZE) ? \par
+                        (\cf2 this\cf0 .table[i].overflow + 1) - (PRIMARY_TABLE_SIZE - 1) : \cf2 this\cf0 .table[i].overflow + 1;\par
+                    \par
+                    \cf1 // counts number of instance index appears in the dictionary\cf0\par
+                    chain_count[index] = chain.Count(v => v == index);\par
+                    \par
+                    \cf1 // add to the collission chain average\cf0\par
+                    chain_avg += chain_count[index];\par
+                \}\par
+            \}\par
+\par
+            \cf1 // calculate the collission chain avrage\cf0\par
+            chain_avg /= chain_count.Count();\par
+\par
+            \cf2 for\cf0  (\cf2 int\cf0  i = 0; i < PRIMARY_TABLE_SIZE; ++i)\par
+            \{\par
+                \cf1 // grab the total length of each bucket\cf0\par
+                total_length += \cf2 this\cf0 .table[i].count;\par
+\par
+                \cf1 // write to the list, which then will be returned and can be used to write to a file.\cf0\par
+                lines.Add(\cf4 "Bucket "\cf0  + (i + 1) + \cf4 ":"\cf0 );\par
+                lines.Add(\cf4 "\\tTotal Length: "\cf0  + \cf2 this\cf0 .table[i].count);\par
+                lines.Add(\cf4 "\\n"\cf0 );\par
+\par
+                \cf1 // if count is greater than 1, \cf0\par
+                \cf1 // +1 to the number of buckets which have a more than one slot filled\cf0\par
+                \cf1 // the requirements state not to cound zero length buckets in the average caluclations\cf0\par
+                \cf2 if\cf0  (\cf2 this\cf0 .table[i].count != 0)\par
+                \{\par
+                    ++non_zero_length_buckets;\par
+                \}\par
+            \}\par
+\par
+            \cf1 // calculate the average total length of all primary buckets\cf0\par
+            total_length_avg = total_length / non_zero_length_buckets;\par
+\par
+            lines.Add(\cf4 "Total Length Average is "\cf0  + total_length_avg);\par
+            lines.Add(\cf4 "Collission Chain Average is "\cf0  + chain_avg);\par
+\par
+            \cf2 return\cf0  lines.ToArray();\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Searches and retrieves matches using the values from the param\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param \{string[]\} Array of items to search for\cf0\par
+\cf1          * @returns \{string[]\} Results of the search in an array, which can be used to write to a file\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 string\cf0 [] Search(\cf2 string\cf0 [] searches)\par
+        \{\par
+            \cf2 bool\cf0  found;\par
+            \cf2 int\cf0  bucket_no;\par
+            \cf2 int\cf0  slot_no;\par
+\par
+            \cf3 List\cf0 <\cf3 String\cf0 > lines = \cf2 new\cf0  \cf3 List\cf0 <\cf3 String\cf0 >();\par
+\par
+            lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0,45\}"\cf0 , \cf4 "Search and Retrieval Report"\cf0 ));\par
+            lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0,38\}"\cf0 , \cf4 "Transactions"\cf0 ));\par
+            lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0,37\}"\cf0 , \cf4 "Search Key\\t\\tBucket/Slot\\t\\tRecord"\cf0 ));\par
+\par
+            \cf2 foreach\cf0  (\cf2 string\cf0  keys \cf2 in\cf0  searches)\par
+            \{\par
+                \cf1 // hashed key\cf0\par
+                \cf2 string\cf0  key = \cf2 this\cf0 .Hash(keys.Substring(0, 10));\par
+\par
+                found = \cf2 false\cf0 ;\par
+                bucket_no = 0;\par
+                \cf2 foreach\cf0  (\cf3 Bucket\cf0  item \cf2 in\cf0  \cf2 this\cf0 .table)\par
+                \{\par
+                    slot_no = 0;\par
+                    \cf2 foreach\cf0 (\cf3 Dictionary\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 > dict \cf2 in\cf0  item.slots)\par
+                    \{\par
+                        \cf2 foreach\cf0  (\cf3 KeyValuePair\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 > kv \cf2 in\cf0  item.slots[slot_no])\par
+                        \{\par
+                            \par
+                            \cf1 // if the two un-hashed keys are equal\cf0\par
+                            \cf2 if\cf0  (item.slots[slot_no][kv.Key].key == keys.Substring(0, 10))\par
+                            \{\par
+                                \cf1 // found\cf0\par
+                                found = \cf2 true\cf0 ;\par
+                                lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0,16\}\{1,16\}/\{2\}\\t\\t\{3\}"\cf0 , item.slots[slot_no][kv.Key].key,\par
+                                    bucket_no + 1,\par
+                                    slot_no + 1,\par
+                                    item.slots[slot_no][kv.Key].value\par
+                                ));\par
+                            \}\par
+                        \}\par
+                        \cf1 // manual iteration\cf0\par
+                        ++slot_no;\par
+                    \}\par
+                    \cf1 // manual iteration\cf0\par
+                    ++bucket_no;\par
+                \}\par
+                \cf1 // if nothing was found\cf0\par
+                \cf2 if\cf0  (!found)\par
+                \{\par
+                    lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0,16\}\{1,16\}/\{2,0\}\\t\\t\{3,0\}"\cf0 ,\par
+                        keys.Substring(0, 10),\par
+                        \cf4 "N"\cf0 ,\par
+                        \cf4 "A"\cf0 ,\par
+                        \cf4 "Record not found"\cf0\par
+                    ));\par
+                \}\par
+            \}\par
+            \cf2 return\cf0  lines.ToArray();\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Restores a data structure that was previously written to a file\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param \{string\} The file path where this data structure is stored\cf0\par
+\cf1          * @return \{Object\} A generic object. This function can be used to restore any data type.\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf3 Object\cf0  RestoreDataStructure(\cf2 string\cf0  filepath)\par
+        \{\par
+            \cf1 // the data structure can be any data type\cf0\par
+            \cf3 Object\cf0  DataStructure = \cf2 null\cf0 ;\par
+            \cf2 try\cf0\par
+            \{\par
+                \cf3 FileStream\cf0  stream = \cf2 new\cf0  \cf3 FileStream\cf0 (filepath, \par
+                    \cf3 FileMode\cf0 .Open);\par
+\par
+                \cf1 // BinaryFormatter and Deserialize restores the data from it's raw binary format\cf0\par
+                \cf3 IFormatter\cf0  formatter = \cf2 new\cf0  \cf3 BinaryFormatter\cf0 ();\par
+                DataStructure = (\cf3 List\cf0 <\cf3 Bucket\cf0 >)formatter.Deserialize(stream);\par
+\par
+                stream.Close();\par
+            \}\par
+            \cf2 catch\cf0  (\cf3 Exception\cf0  e)\par
+            \{\par
+                \cf2 throw\cf0  (e);\par
+            \}\par
+            \cf2 return\cf0  DataStructure;\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Saves a data structure to a file\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param1 \{string\} The filepath to which the data will be stored in\cf0\par
+\cf1          * @param2 \{Object\} A generic object. This function can store any data type.\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 void\cf0  SaveDataStructure(\cf2 string\cf0  filepath, \cf3 Object\cf0  DataStructure)\par
+        \{\par
+            \cf3 Stream\cf0  stream = \cf2 null\cf0 ;\par
+            \cf2 try\cf0\par
+            \{\par
+                stream = \cf2 new\cf0  \cf3 FileStream\cf0 (filepath, \par
+                    \cf3 FileMode\cf0 .Create, \cf3 FileAccess\cf0 .Write, \cf3 FileShare\cf0 .None);\par
+                \par
+                \cf1 // BinaryFormatter and Serialize output the data in raw binary form\cf0\par
+                \cf3 IFormatter\cf0  formatter = \cf2 new\cf0  \cf3 BinaryFormatter\cf0 ();\par
+                formatter.Serialize(stream, DataStructure);\par
+                stream.Close();\par
+            \}\par
+            \cf2 catch\cf0  (\cf3 Exception\cf0  e)\par
+            \{\par
+                \cf2 throw\cf0 (e);\par
+            \}\par
+            \cf2 finally\cf0\par
+            \{\par
+                \cf2 if\cf0  (stream != \cf2 null\cf0 )\par
+                    stream.Close();\par
+            \}\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Generates a report for of the Hash Table contents\cf0\par
+\cf1          * \cf0\par
+\cf1          * @returns \{string[]\} A string array which can be written to a file.\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 string\cf0 [] GenerateReport()\par
+        \{\par
+            \cf3 List\cf0 <\cf3 String\cf0 > lines = \cf2 new\cf0  \cf3 List\cf0 <\cf3 String\cf0 >();\par
+            \cf2 int\cf0  table_no = 0;\par
+            \cf2 int\cf0  slot_no;\par
+\par
+            lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0, 37\}"\cf0 , \cf4 "Hash Table"\cf0 ));\par
+            lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0, 41\}"\cf0 , \cf4 "Verification Report"\cf0 ));\par
+            lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0, 39\}"\cf0 , \cf4 "Before Report"\cf0 ));\par
+\par
+            \cf2 foreach\cf0  (\cf3 Bucket\cf0  item \cf2 in\cf0  \cf2 this\cf0 .table)\par
+            \{\par
+                lines.Add(\cf3 String\cf0 .Format(\cf4 "Bucket \{0\}"\cf0 , table_no + 1));\par
+                slot_no = 0;\par
+                \cf2 foreach\cf0  (\cf3 Dictionary\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 > dict \cf2 in\cf0  item.slots)\par
+                \{\par
+                    \cf2 foreach\cf0  (\cf3 KeyValuePair\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 > kv \cf2 in\cf0  item.slots[slot_no])\par
+                    \{\par
+                        \cf1 // if there is a key in the slot\cf0\par
+                        \cf2 if\cf0  (item.slots[slot_no][kv.Key].key != \cf2 null\cf0 )\par
+                        \{\par
+                            lines.Add(\cf3 String\cf0 .Format(\cf4 "\\tSlot \{0\}: \{1\}\{2\}"\cf0 ,\par
+                                slot_no + 1,\par
+                                item.slots[slot_no][kv.Key].key,\par
+                                item.slots[slot_no][kv.Key].value\par
+                            ));\par
+                        \}\par
+                     \par
+                    \}\par
+                    \cf1 // there must be no key\cf0\par
+                    \cf2 if\cf0  (item.slots[slot_no].Count == 0)\par
+                    \{\par
+                        lines.Add(\cf3 String\cf0 .Format(\cf4 "\\tSlot \{0\}: None"\cf0 , slot_no + 1));\par
+                    \}\par
+                   \cf1 // manual iteration\cf0\par
+                    ++slot_no;\par
+                \}\par
+                \cf1 // if an overflow pointer is set\cf0\par
+                \cf2 if\cf0  (\cf2 this\cf0 .table[table_no].overflow != -1)\par
+                \{\par
+                    lines.Add(\cf3 String\cf0 .Format(\cf4 "\\tOverflow Pointer: \{0\}"\cf0 , \cf2 this\cf0 .table[table_no].overflow + 1));\par
+                \}\par
+                \cf2 else\cf0\par
+                \{\par
+                    lines.Add(\cf3 String\cf0 .Format(\cf4 "\\tOveflow Pointer: \{0\}"\cf0 , \cf4 "None"\cf0 ));\par
+                \}\par
+                lines.Add(\cf3 String\cf0 .Format(\cf4 "\{0\}"\cf0 , \cf4 "\\n"\cf0 ));\par
+                \cf1 // manual iteration\cf0\par
+                ++table_no;\par
+            \}\par
+            \cf2 return\cf0  lines.ToArray();\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * A simple hash function\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param They key to be hashed\cf0\par
+\cf1          * @returns \{string\} The hashed key\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 string\cf0  Hash(\cf2 string\cf0  key)\par
+        \{\par
+            \cf1 // Hash algorithm is (Ord(key[2]) + Ord(key[4]) + Ord(key[6])) mod  primary table size\\\cf0\par
+            \cf1 // Ord meaning ordinal value\cf0\par
+            \cf2 return\cf0  (((\cf2 int\cf0 )key[2] + (\cf2 int\cf0 )key[4] + (\cf2 int\cf0 )key[6]) % PRIMARY_TABLE_SIZE).ToString();\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Inserts keys and values into the Hash Table\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param1 \{string\} The hashed key\cf0\par
+\cf1          * @param2 \{string\} The value\cf0\par
+\cf1          * @param3 \{string\} The un-hashed key\cf0\par
+\cf1          * @api public\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 void\cf0  Insert(\cf2 string\cf0  hash, \cf2 string\cf0  value, \cf2 string\cf0  key)\par
+        \{\par
+            \cf1 // A tuple is an object that contains two or more data types within it\cf0\par
+            \cf1 // they don't require any kind of relation at all.\cf0\par
+            \cf3 Tuple\cf0 <\cf3 Object\cf0 , \cf2 int\cf0 > tup = \cf2 this\cf0 .CollissionCheck(hash);\par
+            \cf2 int\cf0  index;\par
+            \cf2 int\cf0  length;\par
+            \par
+            \cf1 // if the first item is not null\cf0\par
+            \cf2 if\cf0  (tup.Item1 != \cf2 null\cf0 )\par
+            \{\par
+                \cf1 //collission is true\cf0\par
+                index = tup.Item2;\par
+                \cf2 if\cf0  (\cf2 this\cf0 .table[index].count > 2)\par
+                \{\par
+                    \cf1 //overflow is true\cf0\par
+                    index = \cf2 this\cf0 .CheckAvailableBuckets(hash, PRIMARY_TABLE_SIZE, MAX_BUCKETS);\par
+                    length = \cf2 this\cf0 .table[index].count;\par
+                    \cf2 if\cf0  (length > 2)\par
+                    \{\par
+                        \cf1 //overflow of overflow is true\cf0\par
+                        index = \cf2 this\cf0 .CheckAvailableBuckets(hash, index + 1, MAX_BUCKETS);\par
+                        length = \cf2 this\cf0 .table[index].count;\par
+                    \}\par
+                    \cf2 if\cf0  (length > 0)\par
+                    \{\par
+                        \cf1 //insert into old overflow bucket\cf0\par
+                        \cf2 this\cf0 .table[index].slots[length][hash] = \cf2 new\cf0  \cf3 Slot\cf0 ();\par
+                        \cf2 this\cf0 .table[index].slots[length][hash].key = key;\par
+                        \cf2 this\cf0 .table[index].slots[length][hash].value = value;\par
+                        \cf2 this\cf0 .table[index].count += 1;\par
+                    \}\par
+                    \cf2 else\cf0\par
+                    \{\par
+                        \cf1 // new overflow bucket\cf0\par
+                        \cf2 this\cf0 .table[index].slots[0][hash] = \cf2 new\cf0  \cf3 Slot\cf0 ();\par
+                        \cf2 this\cf0 .table[index].slots[0][hash].key = key;\par
+                        \cf2 this\cf0 .table[index].slots[0][hash].value = value;\par
+                        \cf2 this\cf0 .table[index].count += 1;\par
+                        \cf2 this\cf0 .SetOverflowPointer(index, hash);\par
+                    \}\par
+                \}\par
+                \cf2 else\cf0\par
+                \{\par
+                    \cf1 // overflow is false, collission still true\cf0\par
+                    length = \cf2 this\cf0 .table[index].count;\par
+                    \cf2 this\cf0 .table[index].slots[length][hash] = \cf2 new\cf0  \cf3 Slot\cf0 ();\par
+                    \cf2 this\cf0 .table[index].slots[length][hash].key = key;\par
+                    \cf2 this\cf0 .table[index].slots[length][hash].value = value;\par
+                    \cf2 this\cf0 .table[index].count += 1;\par
+                \}\par
+            \}\par
+            \cf2 else\cf0\par
+            \{\par
+                \cf1 // brand new key\cf0\par
+                index = \cf2 this\cf0 .CheckAvailableBuckets(hash, 0, PRIMARY_TABLE_SIZE);\par
+                length = \cf2 this\cf0 .table[index].count;\par
+                \cf2 this\cf0 .table[index].slots[length][hash] = \cf2 new\cf0  \cf3 Slot\cf0 ();\par
+                \cf2 this\cf0 .table[index].slots[length][hash].key = key;\par
+                \cf2 this\cf0 .table[index].slots[length][hash].value = value;\par
+                \cf2 this\cf0 .table[index].count += 1;\par
+            \}\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Sets the overflow pointer to its proper value\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param1 \{int\} The list index of the overflow pointer to be set\cf0\par
+\cf1          * @param2 \{string\} The hashed key used to check any available buckets\cf0\par
+\cf1          * @api private\cf0\par
+\cf1          */\cf0\par
+        \cf2 private\cf0  \cf2 void\cf0  SetOverflowPointer(\cf2 int\cf0  index, \cf2 string\cf0  key)\par
+        \{\par
+            \cf2 int\cf0  of_index = \cf2 this\cf0 .CheckAvailableBuckets(key, 0, PRIMARY_TABLE_SIZE);\par
+\par
+            \cf1 // don't want to erase any old overflow pointer values. this will help for overflow of overflows.\cf0\par
+            \cf2 this\cf0 .table[index].overflow = (\cf2 this\cf0 .table[index].overflow == -1) ? of_index : \cf2 this\cf0 .table[index].overflow;\par
+            \cf2 this\cf0 .table[of_index].overflow = (\cf2 this\cf0 .table[of_index].overflow == -1) ? index : \cf2 this\cf0 .table[of_index].overflow;\par
+\par
+            \cf1 // this is for the pointer of overflow of overflows \cf0\par
+            of_index = \cf2 this\cf0 .CheckAvailableBuckets(key, PRIMARY_TABLE_SIZE, MAX_BUCKETS);\par
+            \cf2 if\cf0  (of_index != index)\par
+                \cf2 this\cf0 .table[index].overflow = of_index;\par
+        \}\par
+\par
+        \cf1 /**\cf0\par
+\cf1          * Checks for any collissions in the Hash Table\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param \{string\} The hashed key\cf0\par
+\cf1          * @returns \{Tuple\cf5 <Object, int>\cf1\} A tuple containing a generic object and index of the collission\cf0\par
+\cf1          * @api private\cf0\par
+\cf1          */\cf0\par
+        \cf2 private\cf0  \cf3 Tuple\cf0 <\cf3 Object\cf0 , \cf2 int\cf0 > CollissionCheck(\cf2 string\cf0  key)\par
+        \{\par
+            \cf2 int\cf0  bucket_no = 0;\par
+            \cf2 foreach\cf0 (\cf3 Bucket\cf0  item \cf2 in\cf0  \cf2 this\cf0 .table)\par
+            \{\par
+                \cf2 foreach\cf0 (\cf3 Dictionary\cf0 <\cf2 string\cf0 , \cf3 Slot\cf0 > dict \cf2 in\cf0  item.slots)\par
+                \{\par
+                    \cf2 if\cf0  (dict.ContainsKey(key))\par
+                    \{\par
+                        \cf2 return\cf0  \cf2 new\cf0  \cf3 Tuple\cf0 <\cf3 Object\cf0 , \cf2 int\cf0 >(dict, bucket_no);\par
+                    \}\par
+                \}\par
+                \cf1 // manual iteration\cf0\par
+                ++bucket_no;\par
+            \}\par
+            \cf2 return\cf0  \cf2 new\cf0  \cf3 Tuple\cf0 <\cf3 Object\cf0 , \cf2 int\cf0 >(\cf2 null\cf0 , 0);\par
+        \}\par
+        \par
+        \cf1 /**\cf0\par
+\cf1          * Checks for any available buckets to insert into\cf0\par
+\cf1          * \cf0\par
+\cf1          * @param1 \{string\} The hashed key\cf0\par
+\cf1          * @param2 \{int\} Where to start checking\cf0\par
+\cf1          * @param3 \{int\} Where to end checking\cf0\par
+\cf1          * @returns \{int\} The index of the next available bucket\cf0\par
+\cf1          */\cf0\par
+        \cf2 public\cf0  \cf2 int\cf0  CheckAvailableBuckets(\cf2 string\cf0  key, \cf2 int\cf0  min, \cf2 int\cf0  max)\par
+        \{\par
+            \cf2 for\cf0  (\cf2 int\cf0  bucket_no = min; bucket_no < max; ++bucket_no)\par
+            \{\par
+                \cf2 for\cf0  (\cf2 int\cf0  slot_no = 0; slot_no < MAX_SLOTS; ++slot_no) \par
+                \{\par
+                    \cf1 // if the slot contains a key, return that index\cf0\par
+                    \cf2 if\cf0  (\cf2 this\cf0 .table[bucket_no].slots[slot_no].ContainsKey(key))\par
+                    \{\par
+                        \cf2 return\cf0  bucket_no;\par
+                    \}\par
+                    \cf1 // if the bucket is empty return that index\cf0\par
+                    \cf2 if\cf0  (\cf2 this\cf0 .table[bucket_no].slots[0].Count == 0)\par
+                    \{\par
+                        \cf2 return\cf0  bucket_no;\par
+                    \}\par
+                \}\par
+            \}\par
+            \cf1 // this line should never be reached unless you're inserting too many values\cf0\par
+            \cf1 // and no more overflow buckets remain.\cf0\par
+            \cf2 throw\cf0  \cf2 new\cf0  \cf3 Exception\cf0 (\cf4 "Ran out of overflow buckets!"\cf0 );\par
+        \}\par
+    \}\par
+\}\par
+\par
+\f0\fs22\par
+\pard\sl240\slmult1\qc\ul MAIN.CS\par
+\par
+\pard\sl240\slmult1\cf1\ulnone\f1\fs19 /**\cf0\par
+\cf1  * @author Adam Voliva\cf0\par
+\cf1  * @description CISP 430 Data Structures\cf0\par
+\cf1  * @name Assignment 1 Hash Table\cf0\par
+\cf1  * @date February 5, 2013\cf0\par
+\cf1  * @file Main.cs\cf0\par
+\cf1  */\cf0\par
+\par
+\cf2 using\cf0  System;\par
+\cf2 using\cf0  System.Collections.Generic;\par
+\cf2 using\cf0  System.Linq;\par
+\cf2 using\cf0  System.Text;\par
+\par
+\par
+\cf2 namespace\cf0  HashTable\par
+\{\par
+    \cf2 class\cf0  \cf3 Program\cf0\par
+    \{\par
+        \cf2 static\cf0  \cf2 void\cf0  Main(\cf2 string\cf0 [] args)\par
+        \{\par
+            \cf1 // Hash Table object.\cf0\par
+            \cf3 Table\cf0  ht = \cf2 new\cf0  \cf3 Table\cf0 ();\par
+            \cf2 try\cf0\par
+            \{\par
+                \cf1 // Read Datain.dat file\cf0\par
+                \cf2 string\cf0 [] lines = System.IO.\cf3 File\cf0 .ReadAllLines(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\datain.dat"\cf0 );\par
+                \cf2 foreach\cf0  (\cf2 string\cf0  line \cf2 in\cf0  lines)\par
+                \{\par
+                    \cf1 // Insert the data\cf0\par
+                    ht.Insert(ht.Hash(line.Substring(0, 10)), line.Substring(10, 20), line.Substring(0, 10));\par
+                \}\par
+\par
+                \cf1 // Generate the 'before' report.\cf0\par
+                \cf2 string\cf0 [] report = ht.GenerateReport();\par
+                System.IO.\cf3 File\cf0 .WriteAllLines(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\before.txt"\cf0 , report);\par
+\par
+                \cf1 // Save the data structure to a file\cf0\par
+                ht.SaveDataStructure(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\saved_table.txt"\cf0 , ht.table);\par
+               \par
+                \cf1 // Erase the data structure\cf0\par
+                ht.table = \cf2 null\cf0 ;\par
+\par
+                \cf1 // Restore the data structure from the file\cf0\par
+                ht.table = (\cf3 List\cf0 <\cf3 Bucket\cf0 >)ht.RestoreDataStructure(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\saved_table.txt"\cf0 );\par
+\par
+                \cf1 // Generate the after report\cf0\par
+                report = ht.GenerateReport();\par
+                System.IO.\cf3 File\cf0 .WriteAllLines(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\after.txt"\cf0 , report);\par
+\par
+                \cf1 // Generate the 'search and retrieval report' \cf0\par
+                \cf2 string\cf0 [] searches = System.IO.\cf3 File\cf0 .ReadAllLines(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\search.dat"\cf0 );\par
+                \cf2 string\cf0 [] result = ht.Search(searches);\par
+                System.IO.\cf3 File\cf0 .WriteAllLines(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\retrieval.txt"\cf0 , result);\par
+\par
+                \cf1 // Collect Bucket statistics\cf0\par
+                \cf2 string\cf0 [] stats = ht.CollectStatistics();\par
+                System.IO.\cf3 File\cf0 .WriteAllLines(\cf4 @"C:\\Users\\Owner\\Documents\\cisp430\\git\\assign1\\stats.txt"\cf0 , stats);\par
+            \}\par
+            \cf1 // Many exceptions to handle, mostly IO errors.\cf0\par
+            \cf2 catch\cf0  (\cf3 Exception\cf0  e)\par
+            \{\par
+                \cf2 throw\cf0  (e);\par
+            \}\par
+       \par
+            \cf1 // Pause at the end\cf0\par
+            \cf3 Console\cf0 .ReadLine();\par
+            \par
+        \}\par
+    \}\par
+\}\par
+\par
+\f0\fs22\par
+\pard\sl240\slmult1\qc\ul BEFORE.TXT\par
+\par
+\pard\lang1033\ulnone\f2                            Hash Table\par
+                      Verification Report\par
+                          Before Report\par
+Bucket 1\par
+\tab Slot 1: TATUNG CO.EL PR. LONG BEACH CA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 2\par
+\tab Slot 1: KAMERMAN LCIRRUS BEAVERTON, OR\par
+\tab Slot 2: QUADRAM COLOACH AV NORCROSS GE\par
+\tab Slot 3: SIGMA DESIUNIVER A SAN JOSE CA\par
+\tab Overflow Pointer: 21\par
+\par
+\par
+Bucket 3\par
+\tab Slot 1: AST RESEARALTON AV IRVINE   CA\par
+\tab Slot 2: TALLTREE SSNTONIO PALO ALTO CA\par
+\tab Slot 3: FUNK SOFTW3RD ST CAMBRIDGE, MA\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 4\par
+\tab Slot 1: EXPRESS SYREMING SCHAUMBURG IL\par
+\tab Slot 2: ORCHID CORWESTINGHO FREMONT CA\par
+\tab Slot 3: CORE INTERFEDERA BOCA RATON FL\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 5\par
+\tab Slot 1: DAC SW INCSPRING VAL DALLAS TX\par
+\tab Slot 2: SUMMIT TECBABSON WELLESLEY, MA\par
+\tab Slot 3: PROSOFT COBELLAI HOLLEYWOOD CA\par
+\tab Overflow Pointer: 23\par
+\par
+\par
+Bucket 6\par
+\tab Slot 1: HERCULES CNINTH ST BERKELEY CA\par
+\tab Slot 2: MAXELL CO.OXFORD  MOONACHIE NJ\par
+\tab Slot 3: SSISOFTWARCENTER ST. OREM UTAH\par
+\tab Overflow Pointer: 22\par
+\par
+\par
+Bucket 7\par
+\tab Slot 1: MICROSTUF,H.W. PKWY ROSWELL GE\par
+\tab Slot 2: EMERSON COSTAN ST SANTA ANA CA\par
+\tab Slot 3: EVEREX SYSMILMONT FREMONT,  CA\par
+\tab Overflow Pointer: 26\par
+\par
+\par
+Bucket 8\par
+\tab Slot 1: IOMEGA CORWESTA SOUTH ROY UTAH\par
+\tab Slot 2: HEWLETT PABERNARD SAN DIEGO CA\par
+\tab Slot 3: PROMETHEUSFREMONT S FREMONT CA\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 9\par
+\tab Slot 1: VEN-TAL INWALSH SANTA CLARA CA\par
+\tab Slot 2: VICTOR CORSCOTTS VALLEY, CALIF\par
+\tab Slot 3: SPECTRUM SWOLFE R SUNNYVALE CA\par
+\tab Overflow Pointer: 25\par
+\par
+\par
+Bucket 10\par
+\tab Slot 1: TAXAN CORPCITY OF INDUSTRY, CA\par
+\tab Slot 2: PARADISE STAYLOR S BRISBANE CA\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 11\par
+\tab Slot 1: NCR COORPOBOWLING DR DAYTON OH\par
+\tab Slot 2: MICROPRO IBOX 57135 HAYWARD CA\par
+\tab Slot 3: MICROGRAFXGREEN RICHARDSON, TX\par
+\tab Overflow Pointer: 24\par
+\par
+\par
+Bucket 12\par
+\tab Slot 1: MICROMART.CAMPUS D NORCROSS GE\par
+\tab Slot 2: INTERLUDE.RICHMOND HOUSTON, TX\par
+\tab Slot 3: DIGITAL REGARDEN C MONTEREY CA\par
+\tab Overflow Pointer: 27\par
+\par
+\par
+Bucket 13\par
+\tab Slot 1: BORLAND I.SCOTTS V. DR S.V. CA\par
+\tab Slot 2: MICRODESIGUNVIE WINTER PARK FL\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 14\par
+\tab Slot 1: LOGIQUEST.MONTRE QUEBEC CANADA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 15\par
+\tab Slot 1: IBM CORPORBOCA RATON,  FLORIDA\par
+\tab Slot 2: EPSON AMERBEDA STR TORRANCE CA\par
+\tab Slot 3: GENOA SYSTTRIMBLE SAN JOSE, CA\par
+\tab Overflow Pointer: 29\par
+\par
+\par
+Bucket 16\par
+\tab Slot 1: INTEL COOR5 ST MOUNTAINVIEW CA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 17\par
+\tab Slot 1: CHANNELS IKI ST TORONTO CANADA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 18\par
+\tab Slot 1: OKIDATA COA MOUNTAIN LAUREL NJ\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 19\par
+\tab Slot 1: None\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 20\par
+\tab Slot 1: None\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 21\par
+\tab Slot 1: PRINCETON.EWING S PRINCETON NJ\par
+\tab Slot 2: GRAPHIC CO5TH AVE. WALTHAM, MA\par
+\tab Slot 3: SOURCE TELPOBOX 1305 MCLEAN VA\par
+\tab Overflow Pointer: 2\par
+\par
+\par
+Bucket 22\par
+\tab Slot 1: HONEYWELL.BAKER COSTA MESA, CA\par
+\tab Slot 2: BORTHER I.THENALA DR IRVINE CA\par
+\tab Slot 3: ROSESOFT CUNIVE WAY SEATTLE WA\par
+\tab Overflow Pointer: 6\par
+\par
+\par
+Bucket 23\par
+\tab Slot 1: QUBIE CORPCALLE S CAMARILLO CA\par
+\tab Slot 2: MAYNARD ELSEMOR CASSELBERRY FL\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 5\par
+\par
+\par
+Bucket 24\par
+\tab Slot 1: BUSSIN TOL128 AVE BELLEVUE, WA\par
+\tab Slot 2: DYSAN CORPPAT H SANTA CLARA CA\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 11\par
+\par
+\par
+Bucket 25\par
+\tab Slot 1: CURITS INCUNIO PETERBOROUGH NH\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 9\par
+\par
+\par
+Bucket 26\par
+\tab Slot 1: COMPUADD CTECH BLVD. AUSTIN TX\par
+\tab Slot 2: AMDEK COR.MAINE GROVE VALLY IL\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 7\par
+\par
+\par
+Bucket 27\par
+\tab Slot 1: MICROWAY CTEMPOHOUSE LONDON UK\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 12\par
+\par
+\par
+Bucket 28\par
+\tab Slot 1: TECMAR INTCOCHRAN RD. SOLON OH\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 21\par
+\par
+\par
+Bucket 29\par
+\tab Slot 1: QUANTUM SWSTAFFO OTTAWA CANADA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 15\par
+\par
+\par
+Bucket 30\par
+\tab Slot 1: None\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+\par
+\pard\sl240\slmult1\qc\lang9\ul\f0 AFTER.TXT\par
+\par
+\pard\lang1033\ulnone\f2                            Hash Table\par
+                      Verification Report\par
+                          Before Report\par
+Bucket 1\par
+\tab Slot 1: TATUNG CO.EL PR. LONG BEACH CA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 2\par
+\tab Slot 1: KAMERMAN LCIRRUS BEAVERTON, OR\par
+\tab Slot 2: QUADRAM COLOACH AV NORCROSS GE\par
+\tab Slot 3: SIGMA DESIUNIVER A SAN JOSE CA\par
+\tab Overflow Pointer: 21\par
+\par
+\par
+Bucket 3\par
+\tab Slot 1: AST RESEARALTON AV IRVINE   CA\par
+\tab Slot 2: TALLTREE SSNTONIO PALO ALTO CA\par
+\tab Slot 3: FUNK SOFTW3RD ST CAMBRIDGE, MA\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 4\par
+\tab Slot 1: EXPRESS SYREMING SCHAUMBURG IL\par
+\tab Slot 2: ORCHID CORWESTINGHO FREMONT CA\par
+\tab Slot 3: CORE INTERFEDERA BOCA RATON FL\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 5\par
+\tab Slot 1: DAC SW INCSPRING VAL DALLAS TX\par
+\tab Slot 2: SUMMIT TECBABSON WELLESLEY, MA\par
+\tab Slot 3: PROSOFT COBELLAI HOLLEYWOOD CA\par
+\tab Overflow Pointer: 23\par
+\par
+\par
+Bucket 6\par
+\tab Slot 1: HERCULES CNINTH ST BERKELEY CA\par
+\tab Slot 2: MAXELL CO.OXFORD  MOONACHIE NJ\par
+\tab Slot 3: SSISOFTWARCENTER ST. OREM UTAH\par
+\tab Overflow Pointer: 22\par
+\par
+\par
+Bucket 7\par
+\tab Slot 1: MICROSTUF,H.W. PKWY ROSWELL GE\par
+\tab Slot 2: EMERSON COSTAN ST SANTA ANA CA\par
+\tab Slot 3: EVEREX SYSMILMONT FREMONT,  CA\par
+\tab Overflow Pointer: 26\par
+\par
+\par
+Bucket 8\par
+\tab Slot 1: IOMEGA CORWESTA SOUTH ROY UTAH\par
+\tab Slot 2: HEWLETT PABERNARD SAN DIEGO CA\par
+\tab Slot 3: PROMETHEUSFREMONT S FREMONT CA\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 9\par
+\tab Slot 1: VEN-TAL INWALSH SANTA CLARA CA\par
+\tab Slot 2: VICTOR CORSCOTTS VALLEY, CALIF\par
+\tab Slot 3: SPECTRUM SWOLFE R SUNNYVALE CA\par
+\tab Overflow Pointer: 25\par
+\par
+\par
+Bucket 10\par
+\tab Slot 1: TAXAN CORPCITY OF INDUSTRY, CA\par
+\tab Slot 2: PARADISE STAYLOR S BRISBANE CA\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 11\par
+\tab Slot 1: NCR COORPOBOWLING DR DAYTON OH\par
+\tab Slot 2: MICROPRO IBOX 57135 HAYWARD CA\par
+\tab Slot 3: MICROGRAFXGREEN RICHARDSON, TX\par
+\tab Overflow Pointer: 24\par
+\par
+\par
+Bucket 12\par
+\tab Slot 1: MICROMART.CAMPUS D NORCROSS GE\par
+\tab Slot 2: INTERLUDE.RICHMOND HOUSTON, TX\par
+\tab Slot 3: DIGITAL REGARDEN C MONTEREY CA\par
+\tab Overflow Pointer: 27\par
+\par
+\par
+Bucket 13\par
+\tab Slot 1: BORLAND I.SCOTTS V. DR S.V. CA\par
+\tab Slot 2: MICRODESIGUNVIE WINTER PARK FL\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 14\par
+\tab Slot 1: LOGIQUEST.MONTRE QUEBEC CANADA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 15\par
+\tab Slot 1: IBM CORPORBOCA RATON,  FLORIDA\par
+\tab Slot 2: EPSON AMERBEDA STR TORRANCE CA\par
+\tab Slot 3: GENOA SYSTTRIMBLE SAN JOSE, CA\par
+\tab Overflow Pointer: 29\par
+\par
+\par
+Bucket 16\par
+\tab Slot 1: INTEL COOR5 ST MOUNTAINVIEW CA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 17\par
+\tab Slot 1: CHANNELS IKI ST TORONTO CANADA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 18\par
+\tab Slot 1: OKIDATA COA MOUNTAIN LAUREL NJ\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 19\par
+\tab Slot 1: None\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 20\par
+\tab Slot 1: None\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+Bucket 21\par
+\tab Slot 1: PRINCETON.EWING S PRINCETON NJ\par
+\tab Slot 2: GRAPHIC CO5TH AVE. WALTHAM, MA\par
+\tab Slot 3: SOURCE TELPOBOX 1305 MCLEAN VA\par
+\tab Overflow Pointer: 2\par
+\par
+\par
+Bucket 22\par
+\tab Slot 1: HONEYWELL.BAKER COSTA MESA, CA\par
+\tab Slot 2: BORTHER I.THENALA DR IRVINE CA\par
+\tab Slot 3: ROSESOFT CUNIVE WAY SEATTLE WA\par
+\tab Overflow Pointer: 6\par
+\par
+\par
+Bucket 23\par
+\tab Slot 1: QUBIE CORPCALLE S CAMARILLO CA\par
+\tab Slot 2: MAYNARD ELSEMOR CASSELBERRY FL\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 5\par
+\par
+\par
+Bucket 24\par
+\tab Slot 1: BUSSIN TOL128 AVE BELLEVUE, WA\par
+\tab Slot 2: DYSAN CORPPAT H SANTA CLARA CA\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 11\par
+\par
+\par
+Bucket 25\par
+\tab Slot 1: CURITS INCUNIO PETERBOROUGH NH\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 9\par
+\par
+\par
+Bucket 26\par
+\tab Slot 1: COMPUADD CTECH BLVD. AUSTIN TX\par
+\tab Slot 2: AMDEK COR.MAINE GROVE VALLY IL\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 7\par
+\par
+\par
+Bucket 27\par
+\tab Slot 1: MICROWAY CTEMPOHOUSE LONDON UK\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 12\par
+\par
+\par
+Bucket 28\par
+\tab Slot 1: TECMAR INTCOCHRAN RD. SOLON OH\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 21\par
+\par
+\par
+Bucket 29\par
+\tab Slot 1: QUANTUM SWSTAFFO OTTAWA CANADA\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Overflow Pointer: 15\par
+\par
+\par
+Bucket 30\par
+\tab Slot 1: None\par
+\tab Slot 2: None\par
+\tab Slot 3: None\par
+\tab Oveflow Pointer: None\par
+\par
+\par
+\par
+\pard\sl240\slmult1\qc\lang9\ul\f0 RETRIEVAL.TXT\par
+\par
+\pard\lang1033\ulnone\f2                   Search and Retrieval Report\par
+                          Transactions\par
+      Search Key\tab\tab Bucket/Slot\tab\tab Record\par
+      KALLTREE S               N/A\tab\tab Record not found\par
+      DAC SW INC               5/1\tab\tab SPRING VAL DALLAS TX\par
+      COMPUADD C              26/1\tab\tab TECH BLVD. AUSTIN TX\par
+      MICROWAY C              27/1\tab\tab TEMPOHOUSE LONDON UK\par
+      TATUNG CO.               1/1\tab\tab EL PR. LONG BEACH CA\par
+      DYSAN CORP              24/2\tab\tab PAT H SANTA CLARA CA\par
+      DIGITAL RE              12/3\tab\tab GARDEN C MONTEREY CA\par
+      QUANTBM SW               N/A\tab\tab Record not found\par
+      PROMETHEUS               8/3\tab\tab FREMONT S FREMONT CA\par
+      EVEREX SYS               7/3\tab\tab MILMONT FREMONT,  CA\par
+      MICROMART.              12/1\tab\tab CAMPUS D NORCROSS GE\par
+      PARADISE S              10/2\tab\tab TAYLOR S BRISBANE CA\par
+      SPECTRUM S               9/3\tab\tab WOLFE R SUNNYVALE CA\par
+      MICRODESIG              13/2\tab\tab UNVIE WINTER PARK FL\par
+      MAXELL CO.               6/2\tab\tab OXFORD  MOONACHIE NJ\par
+      AMDEK COR,               N/A\tab\tab Record not found\par
+      TECMAR INT              28/1\tab\tab COCHRAN RD. SOLON OH\par
+      IBM CORPOR              15/1\tab\tab BOCA RATON,  FLORIDA\par
+      OHCHID COR               N/A\tab\tab Record not found\par
+      FUN  SOFTW               N/A\tab\tab Record not found\par
+\pard\sl240\slmult1\lang9\f0\par
+}
+ 
