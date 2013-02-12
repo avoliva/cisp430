@@ -450,8 +450,9 @@ namespace HashTable
          * @param2 {int} Where to start checking
          * @param3 {int} Where to end checking
          * @returns {int} The index of the next available bucket
+         * @api private
          */
-        public int CheckAvailableBuckets(string key, int min, int max)
+        private int CheckAvailableBuckets(string key, int min, int max)
         {
             for (int bucket_no = min; bucket_no < max; ++bucket_no)
             {
