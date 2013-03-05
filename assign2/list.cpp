@@ -1,262 +1,262 @@
+#ifndef List_H
+#define List_H
+
+#include <exception>
 #include <iostream>
-#include <string>
-#include <vector>
 
-template <class T> class List
+using namespace std;
+
+const unsigned DEFAULT_SIZE = 0;
+
+template <class T>
+class List
 {
-public:
-	List()
-    {
-        this->data = init(0, 0, NULL);
-        this->allocated_size = 0;
-        this->element_count = 0;
-        // std::cout << "end ss= " << *this->end() << std::endl;
-    }
-    List(unsigned size)
-    {
-        try {
-            bool test = this->init(size);
-            if (!test) throw 0;
-        }
-        catch (int) {
-            std::cout << "Error in initializing list." << std::endl;
-        }
-        
-    }
-    T* init(unsigned size, unsigned from_size, const T* from_ptr)
-    {
+    public:
+        List();
+        List(const List &initialiser);
+        ~List(){delete_array();};
+        unsigned size() const;
+        void insert(const T &element);
+        T* begin() const;
+        T* end() const;
+        T* remove(T* posPtr);
+        void clear();
+        void resize(unsigned allocateSize);
+        unsigned get_alloc_size() const;
+        unsigned get_count() const { return this->count; }
+        void set_count(unsigned count) { this->count = count; }
+        void set_alloc_size(unsigned allocated_size) { this->allocted_size = allocated_size; }
+        void set_data(T* data) { this->data = data; }
 
-        T* result_array = new T[allocated_size];
-        if (from_ptr)
-        {
-            const T* tmp_from_ptr = from_ptr;
-            T* tmp_to_ptr = result_array;
-            for (unsigned i = 0; i < from_size; ++i)
-            {
-                try
-                {
-                    *(tmp_to_ptr++) = *(tmp_from_ptr++);
-                }
-                catch(...)
-                {
-                    delete[] result_array;
-                    result_array = NULL;
-                    throw;
-                }
-            }
-        }
+        const T &operator[](int i) const;
+        T &operator[](int i);
+        List<T>& operator=(List rhs);
 
-    }
-	// void Insert(T data);
-    void insert(T data)
-    {
-        if (this->allocated_size == this->element_count)
-        {
-            this->resize((unsigned)((this->element_count * 1.5) + 1));
-            // this->resize((unsigned)(this->element_count));
-        }
-        this->data[this->element_count] = data;
-        this->element_count++;
+    private:
+        T* init(unsigned allocateSize, unsigned fromArraySize, const T* fromArrayPtr);
+        void delete_array();
+        void copy(List &rhs);
+        void swap(T &one,T &two);
 
-    }
-	// void Insert(T data, int index);
-    // void Insert(T data, int index)
-    // {
-    //     this->data[index] = data;
-    // }
-    // template <class T>
-    const T &operator[](int i) const
-    {
-        return *(this->data + i);
-    }
-
-    // template <class T>
-    T &operator[](int i)
-    {
-        return *(this->data + i);
-    }
-	T *remove(T* pos_ptr)
-    {
-        while(pos_ptr != this->end())
-        {
-            *pos_ptr = *(pos_ptr + 1);
-            pos_ptr++;
-        }
-        element_count--;
-        return pos_ptr;
-    }
-	bool Search(int dataKey) const;
-	void Sort(std::string order);
-	T *begin()
-    {
-        return this->data;
-    }
-    T *end()
-    {
-        return this->data + list_size;
-    }
-	T GetNext();
-	bool HasNext() const;
-    unsigned size() const { return this->list_size; }
-    void resize(unsigned size)
-    {
-        T *new_data = this->init(size, this->element_count, this->data);
-        delete[] this->data;
-        this->data = new_data;
-        this->allocated_size = size;
-    }
-
-private:
-     T *data;
-     // T *begin;
-     // T *end;
-     unsigned list_size;
-     unsigned allocated_size;
-     unsigned element_count;
-
-
+        unsigned count;
+        unsigned allocted_size;
+        T *data;
 };
 
-template <class T> class Stack
+template <class T>
+List<T>::List()
 {
-private:
-    List<T> list;
-public:
-	Stack();
-    void Push(T data);
-    T Pop();
-    bool isEmpty();
-    bool isFull();
-    T ShowTop() const;
-};
 
-template <class T> class Queue
-{
-private:
-    List<T> list;
-public:
-    Queue();
-    void Enqueue(T data);
-    T Dequeue();
-    bool isEmpty();
-    bool isFull();
-    void Sort();
-    void Sort(std::string order);
-    bool Search(int dataKey) const;
-
-};
-
-
-int main() {
-
-    List<int> list;
-    int s = 2;
-    list.insert(6);
-    list.insert(6);
-    list.insert(6);
-    list.insert(5);
-    list.remove(&list[2]);
-    // std::cout << list[0] << std::endl;
-    // std::cout << list[1] << std::endl;
-    // std::cout << list[2] << std::endl;
-    // std::cout << list[3] << std::endl;
-
-
-
-    return 0;
+    data = init(DEFAULT_SIZE, 0, NULL);
+    allocted_size = DEFAULT_SIZE;
+    count = 0;
 }
 
-/*
-Intermediate types
-	Arrays
-	Records
-		Array-Records
+template <class T>
+List<T>::List(const List &initialiser)
+{
+    data = init(initialiser.get_alloc_size(), initialiser.size(), &(initialiser[0]));
+    allocted_size = initialiser.get_alloc_size();
+    count = initialiser.size();
+}
 
-Primitive
-	Integer
-	Floating
+template <class T>
+unsigned List<T>::size() const
+{
+    return count;
+}
+
+template <class T>
+void List<T>::insert(const T &element)
+{
+    if (allocted_size == count)
+        resize((unsigned)((count * 1.5) + 1));
+    data[count] = element;
+    count++;
+}
+
+template <class T>
+T* List<T>::begin() const
+{
+    return data;
+}
+
+template <class T>
+T* List<T>::end() const
+{
+    return data + count;
+}
+
+template <class T>
+T* List<T>::remove(T* posPtr)
+{
+    while(posPtr != end())
+    {
+        *posPtr = *(posPtr + 1);
+        posPtr++;
+    }
+    count--;
+
+    return posPtr;
+}
+
+template <class T>
+void List<T>::clear()
+{
+    delete_array();
+    allocted_size = 0;
+    count = 0;
+}
+
+template <class T>
+void List<T>::resize(unsigned allocateSize)
+{
+    T *newArray = init(allocateSize, count, data);
+    delete[] data;
+    data = newArray;
+    allocted_size = allocateSize;
+}
+
+template <class T>
+unsigned List<T>::get_alloc_size() const
+{
+    return allocted_size;
+}
+
+template <class T>
+const T &List<T>::operator[](int i) const
+{
+    return *(data + i);
+}
+
+template <class T>
+T &List<T>::operator[](int i)
+{
+    return *(data + i);
+}
+
+template <class T>
+List<T>& List<T>::operator=(List rhs)
+{
+    copy(rhs);
+    return *this;
+}
+
+template <class T>
+T* List<T>::init(unsigned allocateSize, unsigned fromArraySize, const T* fromPtr)
+{
+    T* resultArray = new T[allocateSize];;
+    if(fromPtr)
+    {
+        const T* tmpFromPtr = fromPtr;
+        T* tmpToPtr = resultArray;
+        for(unsigned i = 0; i < fromArraySize; i++)
+        {
+            try
+            {
+                *(tmpToPtr++) = *(tmpFromPtr++);
+            }
+            catch(...)
+            {
+                delete[] resultArray;
+                resultArray = NULL;
+                throw;
+            }
+        }
+    }
+
+    return resultArray;
+}
+
+template <class T>
+void List<T>::delete_array()
+{
+    delete[] data;
+    data = NULL;
+}
+
+template <class T>
+void List<T>::copy(List &rhs)
+{
+    swap(data,rhs.data);
+    swap(count, rhs.count);
+    swap(allocted_size, rhs.allocted_size);
+}
+
+template<class T>
+void List<T>::swap(T &one,T &two)
+
+{
+    T temp=one;
+    one=two;
+    two=temp;
+}
+
+template <class T> class Stack: public List<T>
+{
+    public:
+        Stack()
+        {
+            this->set_data(this->init(DEFAULT_SIZE, 0, NULL));
+        }
+        void push(const T &element)
+        {
+            this->insert(element);
+        }
+        T* pop()
+        {
+            T ret_val = this->end();
+            this->remove(ret_val);
+            return ret_val;
+        }
+        bool is_empty() { return this->get_count() == 0; }
+        
+
+    private:
+        T* init(unsigned allocateSize, unsigned fromArraySize, const T* fromPtr)
+        {
+            T* resultArray = new T[allocateSize];;
+            if(fromPtr)
+            {
+                const T* tmpFromPtr = fromPtr;
+                T* tmpToPtr = resultArray;
+                for(unsigned i = 0; i < fromArraySize; i++)
+                {
+                    try
+                    {
+                        *(tmpToPtr++) = *(tmpFromPtr++);
+                    }
+                    catch(...)
+                    {
+                        delete[] resultArray;
+                        resultArray = NULL;
+                        throw;
+                    }
+                }
+            }
+
+            return resultArray;
+        }
+        // T* data;
+        // int count;
+        // int allocated_size;
+};
+
+int main()
+{
+    List<int> list;
+    Stack<int> stack;
+    int *s = list.begin();
+    std::cout << " s is " << s << std::endl;
+    list.insert(6);
+    list.insert(5);
+    list.insert(1);
+    list.insert(3);
+    std::cout << " list[2] is " << list.size() << std::endl;
+    list.remove(&list[2]);
+    std::cout << " list[2] is " << list.size() << std::endl;
 
 
-Class Interface
-	Constructors
-		Method Overloads
-	Accessors
-	Manipulator(s)
-	Desctructor?
+}
 
-*/
-
-/*
-
-OO Reuse Hierarchy
-    Class
-    Method Overloads (Same name, different signature)
-    Object Oriented Desisgn Patterns 
-        Containment (has a relation)
-        Inheritance (is a relation)
-    Method override (same name, same signature)
-    Templates (changing data types - data morhpism)
-        Programmer Defined Types Require Template Extensions
-        Sometimes called parametized types.
-    any time you go over this, you will increase complexity in your problem, and increase resuability.
-    Abstract Classses
-        If a class has at least one abstract member, then it is abstract.
-        You can't instance a abstract class because it has a 'hole'
-        You can't make an object from one, because it is not complete.
-        The hole must be filled in at run-time.
-    Generic Classes
-        A class is generic if it's services are insensitive to the kind of data to be operated on.
-        The top level of reusability
-        Pattern reuse required extension, you gotta write some code.
-
-Assign to will start at "level 4".
-Going to have a parent-child relationship between List, Stack and Queue.
-
-Assign 2 Class Model
-    List
-        Stack
-        Queue
-
-    A list is basically a stack, vis-versa
-
-    A stack is a Last In First Out (LIFO) list.
-
-    A queue is a First In First Out (FIFO) list.
-
-    The list is a container class.
-
-    What is a list item?
-        A data value that gets packages inside a construct known as a list entry.
-        A list entry fullly encapsulates a list item.
-        And then the balance of the list entry is for overhead, and that overhead is hidden
-
-    Iheritance model is a relation between a base class.
-        A relationship between a parent and a child.
-        A child inherits the benefits of a parent (code, data, or both).
-        A parent represents the general concepts of it's intended use.
-
-    A container does not change the item, it just holds the data itself.
-
-    A container should contain at a minimum these abilities:
-        Init()
-        Insert()
-        Delete()
-        Search()
-        Sort()
-        Interator()
-
-
-PDF Explanation:
-    
-    The list shall be implemented with an underlying data structure, which is a LInked list
-        Singluar linked
-            Next
-        Doubly linked
-            Prev
-            Next
-        Circular linked
-            The last item points to the first item and vic-versa
-
-
-
-*/
+#endif
