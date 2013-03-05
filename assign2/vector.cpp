@@ -210,6 +210,7 @@ template <class T> class Stack: public List<T>
             return ret_val;
         }
         bool is_empty() { return this->get_count() == 0; }
+        
 
     private:
         T* init(unsigned allocateSize, unsigned fromArraySize, const T* fromPtr)
