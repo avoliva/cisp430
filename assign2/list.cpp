@@ -1,160 +1,248 @@
-#ifndef List_H
-#define List_H
+/*
+ * @author Adam Voliva
+ * @name Assignment 2 - Containers
+ * @date March 3, 2013
+ * @lang C++
+ */
+
+#ifndef LIST_H
+#define LIST_H
 
 #include <exception>
+#include <stdexcept>
 #include <iostream>
+#include <cstdio>
 
 using namespace std;
 
 const unsigned DEFAULT_SIZE = 0;
 
-template <class T>
-class List
+
+// List container
+template <class T> class List
 {
     public:
+        // Conctructors and desctroctors
         List();
         List(const List &initialiser);
-        ~List(){delete_array();};
-        unsigned size() const;
-        void insert(const T &element);
+        ~List(){delete_container();};
+
+        // Manipulators
         T* begin() const;
-        T* end() const;
-        T* remove(T* posPtr);
+        T* end() /*const*/;
+        T* remove(T* pos_ptr);
+        void insert(const T &element);
+        void delete_container();
+        bool is_empty() { return this->get_count() == 0; }
         void clear();
-        void resize(unsigned allocateSize);
+        void resize(unsigned allocated_size);
+
+        // Accessors
+        unsigned size() const;
         unsigned get_alloc_size() const;
         unsigned get_count() const { return this->count; }
         void set_count(unsigned count) { this->count = count; }
-        void set_alloc_size(unsigned allocated_size) { this->allocted_size = allocated_size; }
+        void set_alloc_size(unsigned allocated_size) { this->allocated_size = allocated_size; }
         void set_data(T* data) { this->data = data; }
+        T* get_data() const { return this->data; }
 
+        // Overloaded ops
         const T &operator[](int i) const;
         T &operator[](int i);
         List<T>& operator=(List rhs);
 
     private:
-        T* init(unsigned allocateSize, unsigned fromArraySize, const T* fromArrayPtr);
-        void delete_array();
+        // private constructor
+        T* init(unsigned allocated_size, unsigned array_size, const T* copy_ptr);
+
+        // copy and swap
         void copy(List &rhs);
         void swap(T &one,T &two);
 
+        // private data members
         unsigned count;
-        unsigned allocted_size;
+        unsigned allocated_size;
         T *data;
 };
 
-template <class T>
-List<T>::List()
+/*
+ * Default Contructor
+ * Allocates a container object with a default size
+ */
+template <class T> List<T>::List()
 {
 
-    data = init(DEFAULT_SIZE, 0, NULL);
-    allocted_size = DEFAULT_SIZE;
-    count = 0;
+    this->data = this->init(DEFAULT_SIZE, 0, NULL);
+    this->allocated_size = DEFAULT_SIZE;
+    this->count = 0;
 }
 
-template <class T>
-List<T>::List(const List &initialiser)
+/*
+ * Copy Constructor
+ */
+template <class T> List<T>::List(const List &initialiser)
 {
-    data = init(initialiser.get_alloc_size(), initialiser.size(), &(initialiser[0]));
-    allocted_size = initialiser.get_alloc_size();
-    count = initialiser.size();
+    this->data = this->init(initialiser.get_alloc_size(), initialiser.size(), &(initialiser[0]));
+    this->allocated_size = initialiser.get_alloc_size();
+    this->count = initialiser.size();
 }
 
-template <class T>
-unsigned List<T>::size() const
+/*
+ * Grabs the size of the container
+ */
+template <class T> unsigned List<T>::size() const
 {
-    return count;
+    return this->count;
 }
 
-template <class T>
-void List<T>::insert(const T &element)
+/*
+ * Inserts data into the container 
+ */
+template <class T> void List<T>::insert(const T &element)
 {
-    if (allocted_size == count)
-        resize((unsigned)((count * 1.5) + 1));
-    data[count] = element;
-    count++;
+    if (this->allocated_size == this->count)
+        this->resize((unsigned)((this->count * 1.5) + 1));
+    this->data[count] = element;
+    this->count++;
 }
 
-template <class T>
-T* List<T>::begin() const
+/*
+ * Grabs the first element
+ */
+template <class T> T* List<T>::begin() const
 {
-    return data;
+    return this->data;
 }
 
-template <class T>
-T* List<T>::end() const
-{
-    return data + count;
-}
-
-template <class T>
-T* List<T>::remove(T* posPtr)
-{
-    while(posPtr != end())
+/*
+ * Grabs the last element
+ * Throws an exception if there is no data.
+ */
+template <class T> T* List<T>::end() /*const*/
+{   try 
     {
-        *posPtr = *(posPtr + 1);
-        posPtr++;
+        if (this->is_empty())
+            throw std::out_of_range("Out Of Range Error.");
     }
-    count--;
-
-    return posPtr;
+    catch (std::exception &e) {
+        std::cerr << "exception caught: "  << '\n';
+        std::terminate();
+    }
+    return this->data + this->size() - 1;
 }
 
-template <class T>
-void List<T>::clear()
+/*
+ * Removes an element and handles the gap in the data
+ */
+template <class T> T* List<T>::remove(T* pos_ptr)
 {
-    delete_array();
-    allocted_size = 0;
-    count = 0;
+    
+    while(pos_ptr != this->end())
+    {
+        *pos_ptr = *(pos_ptr + 1);
+        pos_ptr++;
+    }
+    this->count--;
+
+    return pos_ptr;
 }
 
-template <class T>
-void List<T>::resize(unsigned allocateSize)
+/*
+ * Resets the container 
+ */
+template <class T> void List<T>::clear()
 {
-    T *newArray = init(allocateSize, count, data);
-    delete[] data;
-    data = newArray;
-    allocted_size = allocateSize;
+    this->delete_container();
+    this->allocated_size = 0;
+    this->count = 0;
 }
 
-template <class T>
-unsigned List<T>::get_alloc_size() const
+
+/* 
+ * Resizes the container
+ */
+template <class T> void List<T>::resize(unsigned allocated_size)
 {
-    return allocted_size;
+    T *new_data = this->init(allocated_size, count, data);
+    delete[] this->data;
+    this->data = new_data;
+    this->allocated_size = allocated_size;
 }
 
-template <class T>
-const T &List<T>::operator[](int i) const
+/* 
+ * Grabs the allocated size of the container 
+ */
+template <class T> unsigned List<T>::get_alloc_size() const
 {
-    return *(data + i);
+    return this->allocated_size;
 }
 
-template <class T>
-T &List<T>::operator[](int i)
+
+/* 
+ * Overload for the [] operator
+ * This allows you to read the container like list[5]
+ * Throws an exception of the index is out of range
+ */
+template <class T> const T &List<T>::operator[](int i) const
+{   
+    try 
+    {
+        if (this->is_empty() || i >= this->size())
+            throw std::out_of_range("Out Of Range Error.");
+        // return *(data + i);
+    }
+    catch (std::exception &e) {
+        std::cerr << "exception caught: "  << '\n';
+        std::terminate();
+    }
+    return *(this->data + i);
+}
+
+/* 
+ * Overload for the [] operator
+ * This allows you to read the container like list[5]
+ * Throws an exception of the index is out of range
+ */
+template <class T> T &List<T>::operator[](int i)
 {
-    return *(data + i);
+    try 
+    {
+        if (this->is_empty() || i >= this->size())
+            throw std::out_of_range("Out Of Range Error.");
+        // return *(data + i);
+    }
+    catch (std::exception &e) {
+        std::cerr << "exception caught: "  << '\n';
+        std::terminate();
+    }
+    return *(this->data + i);
 }
 
-template <class T>
-List<T>& List<T>::operator=(List rhs)
+/*
+ * Overloads the assignment operator
+ */
+template <class T> List<T>& List<T>::operator=(List rhs)
 {
     copy(rhs);
     return *this;
 }
 
-template <class T>
-T* List<T>::init(unsigned allocateSize, unsigned fromArraySize, const T* fromPtr)
+
+/* 
+ * Container initialization
+ */
+template <class T> T* List<T>::init(unsigned allocated_size, unsigned array_size, const T* copy_ptr)
 {
-    T* resultArray = new T[allocateSize];;
-    if(fromPtr)
+    T* resultArray = new T[allocated_size];;
+    if(copy_ptr)
     {
-        const T* tmpFromPtr = fromPtr;
-        T* tmpToPtr = resultArray;
-        for(unsigned i = 0; i < fromArraySize; i++)
+        const T* tmp_copy_ptr = copy_ptr;
+        T* tmp_to_ptr = resultArray;
+        for(unsigned i = 0; i < array_size; i++)
         {
             try
             {
-                *(tmpToPtr++) = *(tmpFromPtr++);
+                *(tmp_to_ptr++) = *(tmp_copy_ptr++);
             }
             catch(...)
             {
@@ -168,63 +256,93 @@ T* List<T>::init(unsigned allocateSize, unsigned fromArraySize, const T* fromPtr
     return resultArray;
 }
 
-template <class T>
-void List<T>::delete_array()
+
+/* 
+ * Deletes the container and sets it to null
+ */
+template <class T> void List<T>::delete_container()
 {
-    delete[] data;
-    data = NULL;
+    delete[] this->data;
+    this->data = NULL;
 }
 
-template <class T>
-void List<T>::copy(List &rhs)
+/*
+ * Helps the copy constructor
+ */
+template <class T> void List<T>::copy(List &rhs)
 {
-    swap(data,rhs.data);
-    swap(count, rhs.count);
-    swap(allocted_size, rhs.allocted_size);
+    swap(this->data,rhs.data);
+    swap(this->count, rhs.count);
+    swap(this->allocated_size, rhs.allocated_size);
 }
 
-template<class T>
-void List<T>::swap(T &one,T &two)
 
+/* 
+ * Data swapping
+ */
+template<class T> void List<T>::swap(T &one,T &two)
 {
     T temp=one;
     one=two;
     two=temp;
 }
 
+
+
+/*
+ * Stack class which inherits the list
+ */
 template <class T> class Stack: public List<T>
 {
     public:
         Stack()
         {
-            this->set_data(this->init(DEFAULT_SIZE, 0, NULL));
+            this->data = this->init(DEFAULT_SIZE, 0, NULL);
         }
+
+        /* 
+         * Adds data to the 'top' of the stack
+         */
         void push(const T &element)
         {
             this->insert(element);
         }
+
+        /*
+         * Removes and returns the top of the stack
+         */
         T* pop()
         {
-            T ret_val = this->end();
-            this->remove(ret_val);
+            T* ret_val = this->end();
+            this->remove(this->end());
             return ret_val;
         }
-        bool is_empty() { return this->get_count() == 0; }
-        
+
+        /* 
+         * Returns the top of the stack 
+         */
+        T* show_top()
+        {
+            return this->end();
+        }
+
 
     private:
-        T* init(unsigned allocateSize, unsigned fromArraySize, const T* fromPtr)
+        /*
+         * Container initialization
+         */
+        T* init(unsigned allocated_size, unsigned array_size, const T* copy_ptr)
         {
-            T* resultArray = new T[allocateSize];;
-            if(fromPtr)
+            T* resultArray = new T[allocated_size];;
+            if(copy_ptr)
             {
-                const T* tmpFromPtr = fromPtr;
-                T* tmpToPtr = resultArray;
-                for(unsigned i = 0; i < fromArraySize; i++)
+                const T* tmp_copy_ptr = copy_ptr;
+                T* tmp_to_ptr = resultArray;
+                for(unsigned i = 0; i < array_size; i++)
                 {
                     try
                     {
-                        *(tmpToPtr++) = *(tmpFromPtr++);
+                        *(tmp_to_ptr++) = *(tmp_copy_ptr++);
                     }
                     catch(...)
                     {
@@ -237,24 +355,50 @@ template <class T> class Stack: public List<T>
 
             return resultArray;
         }
-        // T* data;
-        // int count;
-        // int allocated_size;
+        T* data;
 };
 
 int main()
 {
     List<int> list;
     Stack<int> stack;
-    int *s = list.begin();
-    std::cout << " s is " << s << std::endl;
+    // std::cout << "stack size is " << stack.size() << std::endl;
+    // int *s = list.begin();
+    // std::cout << " s is " << s << std::endl;
     list.insert(6);
-    list.insert(5);
-    list.insert(1);
-    list.insert(3);
-    std::cout << " list[2] is " << list.size() << std::endl;
-    list.remove(&list[2]);
-    std::cout << " list[2] is " << list.size() << std::endl;
+    list.insert(6);
+    // list.remove(list.end());
+    std::cout << " list[0] is " << list[1] << std::endl;
+    // list.insert(5);
+    // // list.remove(list.begin());
+    // std::cout << " list[0] is " << list[0] << std::endl;
+    stack.push(5);
+    stack.push(22);
+    stack.push(55);
+    stack.push(1);
+    // // stack.push(3);
+    // // stack.push(3);
+    std::cout << "stack[0] is " << *stack.end() << std::endl;
+    //     // std::cout << "stack end is " << stack.end() << std::endl;
+    stack.pop();
+    std::cout << "stack[0] is " << *stack.end() << std::endl;
+
+        stack.pop();
+    std::cout << "stack[0] is " << *stack.end() << std::endl;
+
+    //     stack.pop();
+    // std::cout << "stack[0] is " << *stack.end() << std::endl;
+
+            stack.pop();
+    std::cout << "stack[0] is " << *stack.show_top() << std::endl;
+
+    // std::cout << "list end is " << list.end() << std::endl;
+
+            // std::cout << "stack size is " << stack[0] << std::endl;
+    // list.insert(3);
+    // std::cout << " list[2] is " << list.size() << std::endl;
+    // list.remove(&list[2]);
+    // std::cout << " list[2] is " << list.size() << std::endl;
 
 
 }
