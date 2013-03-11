@@ -344,7 +344,7 @@ template <class T, class Container> class Stack
 protected:
 	Container c;
 public:
-	typedef class Container::value_type value_type;
+	typedef T value_type;
 	typedef Iterator<Node<value_type> > iterator;
 	Stack() : c() {}
 	Stack(const Container& obj) : c(obj) {}
@@ -373,7 +373,7 @@ template <class T, class Container> class Queue
 protected:
 	Container c;
 public:
-	typedef class Container::value_type value_type;
+	typedef T value_type;
 	typedef Iterator<Node<value_type> > iterator;
 	Queue() : c() {}
 	Queue(const Container& obj) : c(obj) {}
@@ -421,9 +421,9 @@ int main()
 	}
 	std::cout << list.search("shit") << std::endl;
 
-	Stack<std::string> stack;
-	stack.push("lewl");
-	stack.push("haha");
+	Stack<int> stack;
+	stack.push(5);
+	stack.push(4);
 	stack.pop();
 	std::cout << "stack top is " << stack.show_top() << std::endl;
 
