@@ -252,9 +252,9 @@ public:
 		// while inserting into the middle of the list, so I created this little hack.
 		for (iterator it = position; it != this->end(); ++it)
 		{
-				Node<value_type> *node = this->head;
-				for (; node->next != NULL; node = node->next);
-				node->next = new Node<value_type>(it.node->data);
+			Node<value_type> *node = this->head;
+			for (; node->next != NULL; node = node->next);
+			node->next = new Node<value_type>(it.node->data);
 		}
 	}
 
@@ -273,7 +273,7 @@ public:
 	// Remove from beginning
 	value_type pop_front() 
 	{ 
-		if (this->empty()) return T();
+		if (this->empty()) return value_type();
 		iterator del = this->begin();
 		value_type tmp = *del;
 		this->remove(del);
@@ -283,7 +283,7 @@ public:
 	// Remove from end
 	value_type pop_back()
 	{	
-		if (this->empty()) return T();
+		if (this->empty()) return value_type();
 		iterator del = this->begin() + (this->size() - 1);
 		value_type tmp = *del;
 		this->remove(del);
@@ -403,7 +403,6 @@ int main()
 	List<std::string>::iterator iters = list.begin();
 	// std::cout << " get next is " << iters.get_next() << std::endl;
 	// iters++;
-	// list.insert(list.begin(), "nig");
 	list.push_back(*iters);
 
 	std::cout << "size is " << list.size() << std::endl;
