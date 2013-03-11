@@ -385,6 +385,7 @@ public:
 	// should never be full.
 	bool is_full() { return false; }
 	void sort(std::string order) { c.sort(order); }
+	void sort() { c.sort(); }
 	bool search(value_type search_key) { return c.search(search_key); }
 };
 
