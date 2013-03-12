@@ -124,10 +124,10 @@ public:
     void insert(iterator position, const value_type& in);
 
     // Insert at end
-    void push_back(value_type in);
+    void push_back(const value_type in);
 
     // Insert at beginning
-    void push_front(value_type in);
+    void push_front(const value_type in);
 
     // Remove from beginning
     value_type pop_front();
