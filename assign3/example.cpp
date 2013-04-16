@@ -3,6 +3,10 @@
 #include <stack>
 #include <limits>
 #include <string>
+#include "stdafx.h"
+#include <string>
+#include <stdio.h>
+#include <math.h>
 using namespace std;
 
 int priority(char a) {
@@ -215,50 +219,60 @@ void infixToPostfix::showPostfix()
 //Definition of converToPostfix function
 void infixToPostfix::convertToPostfix()
 {
-    int len = ifx.length();
-    char temp;
-    stack<char> stack;
+    string expression = "6+5";
+    string::size_type i;
+    int intValue;
+    float x, y;
+    float answer;
+    stack<float> numStack;
 
-    for(int i = 0; i < len; i++)
+    char op = 0; // remember the operation symbol
+    for(i = 0; i < expression.length(); i++)
     {
-        if(ifx[i] == '+' || ifx[i] == '-' || ifx[i] == '*' || ifx[i] == '/')
+        //if the current character is a digit, convert it to an int and push in into the stack
+        if(isdigit(expression[i]))
         {
-            while(!stack.empty() && stack.top() != '(')
+            intValue = (expression[i] - '0'); // no need for a stringstream, really
+            if(numStack.empty())
+                numStack.push(intValue);
+            else
             {
-                if(precedence(stack.top(), ifx[i]))
-                {
-                   stack.pop(temp);
-                   pfx += temp;
-                }
-                else break;
-
+                x = intValue;
+                y = numStack.top();
+                if(op == '+')
+                    {answer = y + x;}
+                else if(op == '-')
+                    {answer = y - x;}
+                else if(op == '/')
+                    {answer = y / x;}
+                else if(op == '*')
+                    {answer = y * x;}
+                else if(op == '^')
+                    {answer = pow(y, x);}
+                else
+                    break;
+                numStack.push(answer);
             }
-            stack.push(ifx[i]);
         }
-        else if(ifx[i] == '(')
-            stack.push('(');
-        else if(ifx[i] == ')')
-        {
-            while(!stack.empty() && stack.top() != '(')
-            {
-                stack.pop(temp);
-                pfx += temp;
-            }
-            if(!stack.empty())
-                stack.pop();
-        }
-
-        else if(ifx[i] >= 'A' && ifx[i] <= 'Z')
-            pfx += ifx[i];
+        else // if(IsValidOp(expression[i]))
+            op = expression[i];
+        // else
+            //  break;
     }
-
-    while(!stack.empty())
+    if(i == expression.length())
     {
-        stack.pop(temp);
-        pfx += temp;
+        if(numStack.empty())
+            cout << "No result" << endl;
+        else //print solution
+            cout << numStack.top() << endl;
     }
+    else
+        cout << "Error at position " << i << endl;
+    
+
+    system("PAUSE");
+    return 0;
 }
-
 
 
 #endif 

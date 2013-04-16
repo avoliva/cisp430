@@ -138,6 +138,8 @@ public:
     // If the head is NULL it must be empty
     bool empty() const;
 
+    bool empty_next() const;
+
     iterator begin();
 
     // The end of the list is always NULL.
@@ -389,6 +391,7 @@ public:
 
     // If the head is NULL it must be empty
     template <class T> bool List<T>::empty() const { return this->head == NULL; }
+    template <class T> bool List<T>::empty_next() const { return this->head->next == NULL; }
     template <class T> typename List<T>::iterator List<T>::begin() { return typename List<T>::iterator(this->head); }
     // The end of the list is always NULL.
     template <class T> typename List<T>::iterator List<T>::end() { return typename List<T>::iterator(NULL); }

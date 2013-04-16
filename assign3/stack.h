@@ -37,11 +37,12 @@ public:
     // No need for destructor. The only thing being created is the Container
     //  which should have it's own destructor
     void push(value_type in) { c.push_front(in); }
-    value_type pop() { return c.pop_front(); }
+    value_type pop() { return (c.empty()) ? '$' : c.pop_front(); }
     bool empty() { return c.empty(); }
+    bool empty_next() { return c.empty_next(); }
     // should never be full.
     bool is_full() { return false; }
-    value_type show_top() { return *(c.begin());}
+    value_type show_top() { return (c.empty()) ? '$' : *(c.begin());}
 };
 
 #endif
