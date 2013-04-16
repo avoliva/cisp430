@@ -23,7 +23,7 @@ template <class T, class Container __DEFAULT_TMPL(List<T>) > class Queue;
 template <class T> class Iterator
 {
     // List is a friend of iterator
-    friend class List<class T::value_type>;
+    friend class List<typename T::value_type>;
 
     // The node class (Iterator<Node T> >)
     T *node;

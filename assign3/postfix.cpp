@@ -37,9 +37,7 @@ public:
                 unsigned i = result;
                 const char * test = input.c_str();
                 std::string sine;
-                for (; test[i] != ' '; ++i){
-                    if (!isdigit(test[i]) || test[i] != '.') sine += test[i]; 
-                }
+                for (; test[i] != ' '; ++i);
                 try {
                     input = input.substr(0, result) + A + input.substr(i);
                 } catch (...)
@@ -51,12 +49,11 @@ public:
             result = input.find("B");
             if (result != std::string::npos)
             {
+
                 unsigned i = result;
                 const char * test = input.c_str();
                 std::string sine;
-                for (; test[i] != ' '; ++i){
-                    if (!isdigit(test[i]) || test[i] != '.') sine += test[i]; 
-                }
+                for (; test[i] != ' '; ++i);
                 try {
                     input = input.substr(0, result) + B + input.substr(i);
                 } catch (...)
@@ -68,18 +65,20 @@ public:
             result = input.find("C");
             if (result != std::string::npos)
             {
+
                 unsigned i = result;
                 const char * test = input.c_str();
                 std::string sine;
-                for (; test[i] != ' '; ++i){
-                    if (!isdigit(test[i]) || test[i] != '.') sine += test[i]; 
-                }
+				
+                for (; test[i] != ' '; ++i);
+				
                 try {
                     input = input.substr(0, result) + C + input.substr(i);
                 } catch (...)
                 {
                     input = input.substr(0, result) + C;
                 }
+				
                 
             }
             result = input.find("D");
@@ -88,9 +87,7 @@ public:
                 unsigned i = result;
                 const char * test = input.c_str();
                 std::string sine;
-                for (; test[i] != ' '; ++i){
-                    if (!isdigit(test[i]) || test[i] != '.') sine += test[i]; 
-                }
+                for (; test[i] != ' '; ++i);
                 try {
                     input = input.substr(0, result) + D + input.substr(i);
                 } catch (...)
@@ -488,7 +485,7 @@ int main()
 {
     std::string infix;
     InfixToPostfix parser;
-    char first;
+    char first = '\0';
     Evaluator eval;
     Functions funcs;
     std::cout << "Please input the equation. Press q afterwards to get the result INCLUDE SPACES AFTER EVERY CHARACTER: " << std::endl << std::endl;
@@ -507,7 +504,6 @@ int main()
     postfix = funcs.clean(postfix);
 
     std::vector<std::string> s = split(postfix);
-
     for (std::vector<std::string>::iterator it = s.begin(); it != s.end(); ++it)
     {
         if (*it == "+")
