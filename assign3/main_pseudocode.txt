@@ -1,0 +1,31 @@
+get equation from user
+find the equal sign in the equation
+if the equal sign is in the equation
+	grab the first character of the equation
+	delete the equal sign and everything before it
+end if
+check equation for bad tokens
+replace any letters with their corresponding numbers
+create the postfix string
+execute any functions in the equation
+split the user's input into a list
+iterate over every list item
+	if item is a plus sign
+		add
+	else if item is a subtract sign
+		subtract
+	else if item is a multipication sign
+		multiply
+	else if item is a division sign
+		divide
+	else if item is numeric
+		convert string to a float
+	else
+		must be invalid input
+	endif
+
+endloop
+
+display everything in the stack
+
+end

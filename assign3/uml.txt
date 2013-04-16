@@ -1,0 +1,52 @@
+SymbolTable
+	convert(+)
+
+
+InfixToPostfix
+	exec(+)
+	priority_symbols(-)
+
+
+Functions
+	clean(+)
+	sine(-)
+	cosine(-)
+	sqroot(-)
+	absolute(-)
+
+
+Evaluator : 1:1 : Stack
+	add(+)
+	subtract(-)
+	mulipley(-)
+	divide(-)
+
+
+TokenItem
+	string type(-)
+	string token(-)
+	set identifier (-)
+	set operators (-)
+	set function (-)
+	bool in(char, set) (+)
+	bool in(string, set) (+)
+
+
+TokenList : 1:m : TokenItem
+	int token_count(-)
+	TokenItem token_array(-)
+	string input(-)
+	int get_token_cout(+)
+	set_token_count(int) (+)
+	TokenItem get_token_item(int index) (+)
+	TokenItem[] get_token_items() (+)
+	set_token_item(int, TokenItem) (+)
+
+
+Validator : 1:m TokenList
+Validator : 1:M TokenItem
+	validate (+)
+	processIdentifier (-)
+	processOperator (-)
+	processOther (-)
+

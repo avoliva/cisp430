@@ -1,6 +1,7 @@
 // Adam Voliva
 // CISP430
 // Postfix evaluator (assign 3)
+// unfinished, horribly written code that still works
 
 #include <iostream>
 #include <sstream>
@@ -277,46 +278,42 @@ private:
 
 
 class Evaluator : public Stack<float> {
-      public:
-             void add();          
-             void subtract();     
-             void multiply();     
-             void divide();      
+public:   
+    void add(){
+        if (this->empty()) 
+           return;
+        
+        this->push(this->pop() + this->pop()); 
+    }
+
+    void subtract(){
+        if (this->empty()) 
+           return;
+           
+        this->push((this->pop() - this->pop())*-1);
+    }
+
+    void multiply(){
+        if (this->empty()) 
+           return;
+           
+        this->push(this->pop()*this->pop()); 
+    }
+
+    void divide(){
+        if (this->empty()) 
+           return;
+           
+        this->push(1./(float(this->pop())/this->pop())); 
+    }
 };
 
 
-void Evaluator::add(){
-    if (this->empty()) 
-       return;
-    
-    this->push(this->pop() + this->pop()); 
-}
-
-void Evaluator::subtract(){
-    if (this->empty()) 
-       return;
-       
-    this->push((this->pop() - this->pop())*-1);
-}
-
-void Evaluator::multiply(){
-    if (this->empty()) 
-       return;
-       
-    this->push(this->pop()*this->pop()); 
-}
-
-void Evaluator::divide(){
-    if (this->empty()) 
-       return;
-       
-    this->push(1./(float(this->pop())/this->pop())); 
-}
 
 bool is_num(std::string input){
-    for (int i = 0; i < input.length(); i++){
+    for (unsigned i = 0; i < input.length(); i++){
         if (!(isdigit(input[i])) && input[i] != '.' && input[i] != '-') 
-             return false;
+            return false;
     }
     return true;
 }
@@ -372,10 +369,10 @@ public:
     int token_count;
     TokenItem token_array[100];
     std::string input;
-    // int get_token_count() { return this->token_count; }
-    // TokenItem get_token_item(int index) { return this->token_array[index]; }
+    int get_token_count() { return this->token_count; }
+    TokenItem get_token_item(int index) { return this->token_array[index]; }
     void set_token_count(int token_count) { this->token_count = token_count; }
-    // void set_token_item(int index, TokenItem item) { this->token_array[index] = item; }
+    void set_token_item(int index, TokenItem item) { this->token_array[index] = item; }
 
 };
 
@@ -418,7 +415,7 @@ public:
             }
         }
     }
-
+private:
     void processIdentifier(int *ptr, int *tokenCount, TokenItem tokenArray[])
     {
         std::string newToken;
