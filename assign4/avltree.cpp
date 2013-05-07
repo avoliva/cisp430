@@ -69,7 +69,154 @@ public:
             return node->item;
         }
     }
+    void clear()
+    {
+        if (this->root != NULL)
+        {
+            this->binary_clear(this->root);
+        }
+        this->root = NULL;
+        this->size = 0;
+    }
 
+    void insert(const T item)
+    {
+        if (this->find(item))
+            return;
+        if (this->size == 0)
+        {
+            this->root = new TreeNode(item);
+            this->size++;
+            return;
+        }
+        else
+        {
+            this->root = this->binary_insert(this->root, item);
+            return;
+        }
+    }
+
+    void remove(const T item)
+    {
+        if (this->size == 0)
+        {
+            return;
+        }
+        else 
+        {
+            this->root = binary_remove(this->root, item);
+        }
+    }
+
+    bool find(const T item)
+    {
+        if (this->root != NULL)
+        {
+            return this->binary_find(this->root, item);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+std::string print (std::string sort_order)
+  {
+    
+    if (this->size == 0) 
+    {
+        return ""; 
+    }
+    List<TreeNode*> current_level;
+    List<TreeNode*> next_level;
+    List<TreeNode*> temp;
+    List<std::string> ordered;
+    current_level.push_front(this->root);
+  
+    while (!current_level.empty())
+    {
+        TreeNode *node = current_level.pop_front(); 
+        if (node != NULL)
+        {
+            stringstream ss;
+            ss << " " << node->item << "(" << node->height << ")"; 
+            ordered.push_back(ss.str());
+            if (node->left != NULL)
+                next_level.push_front(node->left);
+            if (node->right != NULL)
+                next_level.push_front(node->right);
+        }
+        if (current_level.empty())
+        {
+            temp = current_level;
+            current_level = next_level;
+            next_level = temp;
+        }
+    }
+    ordered.sort(sort_order);
+    std::stringstream done;
+    while (!ordered.empty())
+    {
+        done << ordered.pop_front() << std::endl;
+    }
+    std::string s = done.str();
+    return s;
+  }
+
+  std::string print ()
+  {
+    std::stringstream ss;
+    if (this->size == 0) 
+    {
+        string s = ss.str();
+        return s; 
+    }
+    ss << endl << "level 0:";
+
+    List<TreeNode*> current_level;
+    List<TreeNode*> next_level;
+    List<TreeNode*> temp;
+    current_level.push_front(this->root);
+  
+    int i = 0;
+    int printed = 0;
+    while (!current_level.empty())
+    {
+        TreeNode  *node = current_level.pop_front(); 
+        if (node != NULL)
+        {
+            ss << " " << node->item << "(" << node->height << ")"; 
+            printed++;
+            if (node->left != NULL)
+              next_level.push_front(node->left); 
+            if (node->right != NULL)
+              next_level.push_front(node->right);
+        }
+        if ((printed >= 8) && (!current_level.empty()) && (i <= root->height))
+        {
+            ss << endl;
+            ss << "level " << i << ":";
+            printed = 0;
+        }
+        if (current_level.empty())
+        {
+            if ((!next_level.empty()) && (i < root->height))
+            {
+                ss << endl;
+                ss << "level " << ++i << ":";
+                printed = 0;
+            }
+            temp = current_level;
+            current_level = next_level;
+            next_level = temp;
+        }
+    }
+
+    std::string s = ss.str();
+    return s;
+  }
+
+private:
     TreeNode* single_right_rotate(TreeNode* node)
     {
         TreeNode* ptr = node->left;
@@ -260,153 +407,7 @@ public:
     }
 
 
-    void clear()
-    {
-        if (this->root != NULL)
-        {
-            this->binary_clear(this->root);
-        }
-        this->root = NULL;
-        this->size = 0;
-    }
-
-    void insert(const T item)
-    {
-        if (this->find(item))
-            return;
-        if (this->size == 0)
-        {
-            this->root = new TreeNode(item);
-            this->size++;
-            return;
-        }
-        else
-        {
-            this->root = this->binary_insert(this->root, item);
-            return;
-        }
-    }
-
-    void remove(const T item)
-    {
-        if (this->size == 0)
-        {
-            return;
-        }
-        else 
-        {
-            this->root = binary_remove(this->root, item);
-        }
-    }
-
-    bool find(const T item)
-    {
-        if (this->root != NULL)
-        {
-            return this->binary_find(this->root, item);
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-std::string print (std::string sort_order)
-  {
     
-    if (this->size == 0) 
-    {
-        return ""; 
-    }
-    List<TreeNode*> current_level;
-    List<TreeNode*> next_level;
-    List<TreeNode*> temp;
-    List<std::string> ordered;
-    current_level.push_front(this->root);
-  
-    while (!current_level.empty())
-    {
-        TreeNode *node = current_level.pop_front(); 
-        if (node != NULL)
-        {
-            stringstream ss;
-            ss << " " << node->item << "(" << node->height << ")"; 
-            ordered.push_back(ss.str());
-            if (node->left != NULL)
-                next_level.push_front(node->left);
-            if (node->right != NULL)
-                next_level.push_front(node->right);
-        }
-        if (current_level.empty())
-        {
-            temp = current_level;
-            current_level = next_level;
-            next_level = temp;
-        }
-    }
-    ordered.sort(sort_order);
-    std::stringstream done;
-    while (!ordered.empty())
-    {
-        done << ordered.pop_front() << std::endl;
-    }
-    std::string s = done.str();
-    return s;
-  }
-
-  std::string print ()
-  {
-    std::stringstream ss;
-    if (this->size == 0) 
-    {
-        string s = ss.str();
-        return s; 
-    }
-    ss << endl << "level 0:";
-
-    List<TreeNode*> current_level;
-    List<TreeNode*> next_level;
-    List<TreeNode*> temp;
-    current_level.push_front(this->root);
-  
-    int i = 0;
-    int printed = 0;
-    while (!current_level.empty())
-    {
-        TreeNode  *node = current_level.pop_front(); 
-        if (node != NULL)
-        {
-            ss << " " << node->item << "(" << node->height << ")"; 
-            printed++;
-            if (node->left != NULL)
-              next_level.push_front(node->left); 
-            if (node->right != NULL)
-              next_level.push_front(node->right);
-        }
-        if ((printed >= 8) && (!current_level.empty()) && (i <= root->height))
-        {
-            ss << endl;
-            ss << "level " << i << ":";
-            printed = 0;
-        }
-        if (current_level.empty())
-        {
-            if ((!next_level.empty()) && (i < root->height))
-            {
-                ss << endl;
-                ss << "level " << ++i << ":";
-                printed = 0;
-            }
-            temp = current_level;
-            current_level = next_level;
-            next_level = temp;
-        }
-    }
-
-    std::string s = ss.str();
-    return s;
-  }
-
 
 };
 
@@ -432,7 +433,6 @@ int main()
     std::cout << " ITEM (HEIGHT) - DESCENDING ORDER" << std::endl << std::endl;
     output = tree.print("desc");
     std::cout << output << std::endl << std::endl;
-    // tree.remove("Isolation");
     std::ifstream myfile2 ("remove.dat");
     if (myfile2.is_open())
     {
