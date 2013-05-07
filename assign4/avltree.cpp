@@ -27,16 +27,8 @@ public:
     TreeNode* root;
     int size;
 
-    AVL(int size = 0)
-    {
-        this->root = NULL;
-        this->size = size;
-    }
-
-    ~AVL()
-    {
-        this->clear();
-    }
+    AVL() : root(NULL), size(0) {}
+    ~AVL() { this->clear(); }
 
     int get_height(TreeNode* node)
     {
@@ -54,7 +46,7 @@ public:
     {
         int left = this->get_height(node->left);
         int right = this->get_height(node->right);
-        node->height = ((std::max(left, right)) + 1);
+        node->height = (std::max(left, right)) + 1;
         return node;
     }
 
@@ -87,22 +79,16 @@ public:
         {
             this->root = new TreeNode(item);
             this->size++;
-            return;
         }
         else
         {
             this->root = this->binary_insert(this->root, item);
-            return;
         }
     }
 
     void remove(const T item)
     {
-        if (this->size == 0)
-        {
-            return;
-        }
-        else 
+        if (!this->size == 0)
         {
             this->root = binary_remove(this->root, item);
         }
@@ -114,10 +100,7 @@ public:
         {
             return this->binary_find(this->root, item);
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
 std::string print (std::string sort_order)
