@@ -399,7 +399,7 @@ int main()
         while ( myfile.good() )
         {
             getline (myfile,line);
-            if (line != "")
+            if (!line.empty())
                 tree.insert(line);
         }
         myfile.close();
@@ -417,7 +417,7 @@ int main()
         while ( myfile2.good() )
         {
             getline (myfile2,line);
-            if (line != "")
+            if (!line.empty())
                 tree.remove(line);
         }
         myfile2.close();
