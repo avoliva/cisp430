@@ -142,8 +142,7 @@ std::string print (std::string sort_order)
     {
         done << ordered.pop_front() << std::endl;
     }
-    std::string s = done.str();
-    return s;
+    return done.str();
   }
 
   std::string print ()
@@ -195,8 +194,7 @@ std::string print (std::string sort_order)
         }
     }
 
-    std::string s = ss.str();
-    return s;
+    return ss.str();
   }
 
 private:
