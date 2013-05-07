@@ -350,10 +350,8 @@ private:
         {
             return node->item;
         }
-        else
-        {
-            return this->find_min(node->left);
-        }
+        return this->find_min(node->left);
+
     }
 
     bool binary_find(TreeNode* node, T item)
