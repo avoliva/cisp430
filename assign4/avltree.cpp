@@ -286,20 +286,19 @@ private:
         if ((this->get_height(node->left->right)) > (this->get_height(node->left->left)))
         {
             node = this->double_right_rotate(node);
-            return node;
         }
         else
         {
             node = this->single_right_rotate(node);
-            return node;
         }
+        return node;
     }
 
     TreeNode* binary_remove(TreeNode* node, T item)
     {
         if (node == NULL)
         {
-            return NULL;
+            return node;
         }
         if (node->item == item)
         {
@@ -314,7 +313,7 @@ private:
                 this->size--;
                 TreeNode * temp = node;
                 node = node->left;
-                delete (temp);
+                delete temp;
                 return node;
             }
             else if ((node->left == NULL) && (node->right != NULL))
@@ -322,7 +321,7 @@ private:
                 this->size--;
                 TreeNode * temp = node;
                 node = node->right;
-                delete (temp);
+                delete temp;
                 return node;
             }
             else if ((node->left != NULL) && (node->right != NULL))
