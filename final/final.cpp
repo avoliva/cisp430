@@ -161,7 +161,6 @@ int main() {
     Evaluator ev;
     int correct(0);
     int incorrect(0);
-    ex.set();
     std::string answer;
     while (answer != "q") {
         ex.set();

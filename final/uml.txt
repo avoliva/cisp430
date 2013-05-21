@@ -1,0 +1,30 @@
+Expression
+    array dict -
+    integer left -
+    integer right -
+    character operand -
+    string expression -
+    empty set +
+    empty set(integer, integer, character) +
+    empty set_left(integer) +
+    empty set_left() +
+    empty set_right(integer) +
+    empty set_operand(character) +
+    empty set_operand() +
+    string get() +
+    integer get_left() +
+    integer get_right() +
+    character get_operand() +
+    empty reset() +
+
+Evaluator
+    empty parse(string) -
+    string expression -
+    integer left -
+    integer right -
+    character operand -
+    array split(string) -
+    boolean validate(string) +
+    string evaluate(string) +
+    string evaluate() +
+    empty set(string) +
